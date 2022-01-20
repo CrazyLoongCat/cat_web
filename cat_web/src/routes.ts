@@ -41,6 +41,26 @@ export const routes = [
         name: 'menu.list.cardList',
         key: 'list/card',
       },
+      {
+        name: '日上APP-我的订单',
+        key: 'list/ri-wishs',
+      },
+      {
+        name: '日上APP-用户管理',
+        key: 'list/ri-phone',
+      },
+      {
+        name: '日上APP-地址管理',
+        key: 'list/ri-address',
+      },
+      {
+        name: '日上APP-优惠券管理',
+        key: 'list/ri-code',
+      },
+      {
+        name: '日上APP-已下订单查询',
+        key: 'list/ri-placed',
+      },
     ],
   },
   {
@@ -54,6 +74,10 @@ export const routes = [
       {
         name: 'menu.form.step',
         key: 'form/step',
+      },
+      {
+        name: '日上APP下单',
+        key: 'form/RiPlaceOrder',
       },
     ],
   },
