@@ -28,6 +28,7 @@ export default function ListCard() {
     axios
       .get('/api/cardList')
       .then((res) => {
+        console.log(res.data)
         setData(res.data);
       })
       .finally(() => setLoading(false));

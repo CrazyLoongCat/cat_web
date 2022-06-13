@@ -126,9 +126,9 @@ function SearchTable(props: {
           loading={loading}
           scroll={{ y: 400 }}
           rowSelection={{
-            type:'radio',
+            type:'checkbox',
             onSelect: (selected, record, selectedRows) => {
-              props.onSelect(record);
+              props.onSelect(selectedRows);
             },
             checkboxProps: (record) => {
               return {

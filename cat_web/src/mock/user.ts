@@ -6,6 +6,7 @@ if (!isSSR) {
   Mock.XHR.prototype.withCredentials = true;
 
   setupMock({
+    mock: true,
     setup: () => {
       // 用户信息
       Mock.mock(new RegExp('/api/user/userInfo'), () => {

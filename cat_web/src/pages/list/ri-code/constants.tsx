@@ -1,8 +1,8 @@
 import React from 'react';
 import {Button, Typography, Modal} from '@arco-design/web-react';
-import IconText from './icons/text.svg';
-import IconHorizontalVideo from './icons/horizontal.svg';
-import IconVerticalVideo from './icons/vertical.svg';
+import IconText from '../../common/icons/text.svg';
+import IconHorizontalVideo from '../../common/icons/horizontal.svg';
+import IconVerticalVideo from '../../common/icons/vertical.svg';
 import styles from './style/index.module.less';
 import axios from "axios";
 

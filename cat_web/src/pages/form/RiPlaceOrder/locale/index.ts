@@ -71,6 +71,8 @@ const i18n = {
     'stepForm.channel.address.required': '请输入下单内容',
     'stepForm.channel.address.placeholder': '点击进行选择',
     'stepForm.channel.number': '下单数量',
+    'stepForm.channel.type': '下单方式',
+    'stepForm.channel.preferentialSum': '优惠金额',
     'stepForm.created.success.title': '创建成功',
     'stepForm.created.success.desc': '表单创建成功',
     'stepForm.created.success.view': '查看表单',

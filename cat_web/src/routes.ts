@@ -42,8 +42,42 @@ export const routes = [
         key: 'list/card',
       },
       {
-        name: '日上APP-我的订单',
-        key: 'list/ri-wishs',
+        name: '海南APP-商品监控',
+        key: 'list/hn-goods',
+      },
+      {
+        name: '海南APP-监控列表',
+        key: 'list/hn-monitors',
+      },
+      {
+        name: '海南APP-订单',
+        key: 'list/hn-orders',
+        children:[
+          {
+            name: '全部',
+            key: 'list/hn-orders/all',
+          },
+          {
+            name: '待支付',
+            key: 'list/hn-orders/pre-pay',
+          },
+          {
+            name: '待发货',
+            key: 'list/hn-orders/pre-send',
+          },
+          {
+            name: '待收货',
+            key: 'list/hn-orders/pre-finish',
+          },
+          {
+            name: '已完成',
+            key: 'list/hn-orders/finished',
+          }
+        ]
+      },
+      {
+        name: '海南APP-员工返利信息',
+        key: 'list/hn-reward',
       },
       {
         name: '日上APP-用户管理',
@@ -58,7 +92,11 @@ export const routes = [
         key: 'list/ri-code',
       },
       {
-        name: '日上APP-已下订单查询',
+        name: '日上APP-下单',
+        key: 'form/RiPlaceOrder',
+      },
+      {
+        name: '日上APP-订单',
         key: 'list/ri-placed',
       },
     ],
@@ -74,10 +112,6 @@ export const routes = [
       {
         name: 'menu.form.step',
         key: 'form/step',
-      },
-      {
-        name: '日上APP下单',
-        key: 'form/RiPlaceOrder',
       },
     ],
   },

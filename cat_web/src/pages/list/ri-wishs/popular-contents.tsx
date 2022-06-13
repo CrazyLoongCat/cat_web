@@ -1,32 +1,47 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {Card, Modal, Radio, Table, Typography} from '@arco-design/web-react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import {Button, Card, Modal, PaginationProps, Radio, Space, Table, Typography} from '@arco-design/web-react';
 import axios from 'axios';
 import useLocale from './locale/useLocale';
-
+import { getColumns } from './constants';
+import styles from "@/pages/list/ri-wishs/style/index.module.less";
+import ExportJsonExcel from 'js-export-excel';
 axios.defaults.timeout = 5000;                        //响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
 axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 function PopularContent(props: {
   token: any,
+  phone?:any,
+  width:number,
   onSelect: (values: Record<string, any>) => void;
 }) {
   const t = useLocale();
+  const tableCallback = async (record, type) => {
+    console.log(record, type);
+  };
+  const columns = useMemo(() => getColumns(t, tableCallback), [t]);
   const [type, setType] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [total] = useState(0);
+  const [total] = useState(1000);
   const [token] = useState(0);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const fetchData = useCallback(() => {
     setLoading(true);
     axios.post('/ri/getwishs', {
           type: type,
           token:  props.token,
+          pageNum: page-1,
       }).then((res) => {
-        if (res.data.data != null) {
-          setData(res.data.data);
+        if (res.data.code == 0) {
+          if (res.data.data != null) {
+            setData(res.data.data);
+          } else {
+            setData([]);
+          }
+
         } else if (res.data.code != 0){
           Modal.error({
             title: res.data.msg,
@@ -35,47 +50,48 @@ function PopularContent(props: {
       }).finally(() => {
         setLoading(false);
       });
-  }, [page, type,token]);
+  }, [page, type]);
 
   useEffect(() => {
     fetchData();
   }, [page, fetchData]);
 
-  const columns = [
-    {
-      title: t['workplace.column.code'],
-      dataIndex: 'code',
-      width: 150,
-    },
-    {
-      title: t['workplace.column.abname'],
-      dataIndex: 'abname',
-      render: (x) => (
-        <Typography.Paragraph style={{ margin: 0 }} ellipsis>
-          {x}
-        </Typography.Paragraph>
-      ),
-    },
-    {
-      title: t['workplace.column.abiid'],
-      dataIndex: 'abiid',
-      render: (x) => (
-          <Typography.Paragraph style={{ margin: 0 }} ellipsis>
-            {x}
-          </Typography.Paragraph>
-      ),
-    },
-    {
-      title: t['workplace.column.num'],
-      dataIndex: 'num',
-      width: 150,
-    },
-    {
-      title: t['workplace.column.price'],
-      dataIndex: 'price',
-      width: 110,
-    },
-  ];
+  const exportExcel = () => {
+    const dataTable = [];
+    if (selectedRows) {
+      for (const i in selectedRows) {
+        if(selectedRows){
+          const obj = {
+            '订单编号': selectedRows[i].code,
+            '下单时间': selectedRows[i].creatdate,
+            '完成状态': selectedRows[i].statedesc,
+            '实付金额': selectedRows[i].prices,
+            '收件人姓名': selectedRows[i].contacts,
+            '地址': selectedRows[i].address,
+            '手机号': selectedRows[i].tel,
+            '商品名称': selectedRows[i].abname,
+            '数量': selectedRows[i].num,
+
+
+          }
+          dataTable.push(obj);
+        }
+      }
+    }
+    const option={fileName : '日上订单_'+props.phone, datas:[
+        {
+          sheetData:dataTable,
+          sheetName:'sheet',
+          sheetFilter:['订单编号','下单时间','完成状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
+          sheetHeader:['订单编号','下单时间','完成状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
+          columnWidths: [10,10,5,5,5,15,6,15,5],
+        }
+      ]};
+
+    const toExcel = new ExportJsonExcel(option);
+    toExcel.saveExcel();
+  }
+
 
   return (
     <Card
@@ -93,22 +109,29 @@ function PopularContent(props: {
         ]}
         style={{ marginBottom: 16 }}
       />
+      <div className={styles['button-group']}>
+        <Space>
+          <Button type="primary"  onClick={exportExcel}>
+              导出excel
+          </Button>
+
+        </Space>
+      </div>
       <Table
         rowKey="code"
         columns={columns}
         virtualized={true}
-        scroll={{ y: 400 }}
+        scroll={{ y: props.width }}
         data={data}
         loading={loading}
         rowSelection={{
-          type:'radio',
+          type:'checkbox',
+          onSelectAll: (selected, selectedRows) =>{
+            console.log(selectedRows);
+            setSelectedRows(selectedRows);
+          },
           onSelect: (selected, record, selectedRows) => {
             props.onSelect(record);
-          },
-          checkboxProps: (record) => {
-            return {
-              disabled: record.id === '4',
-            };
           },
         }}
         tableLayoutFixed

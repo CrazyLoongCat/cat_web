@@ -7,7 +7,7 @@ import {
   Typography,
   Space,
   Card,
-  Result, Modal,
+  Result, Modal, Select,
 } from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
@@ -32,7 +32,7 @@ function StepForm() {
   const [visibleOrder, setVisibleOrder] = React.useState(false);
   const [form] = Form.useForm();
   const [orders, setOrders] = useState({});
-  const [phone, setPhone] = useState({id:'',phone:''});
+  const [phoneList, setPhoneList] = useState([{id:'',phone:''}]);
   const [address, setAddress] = useState({id:'',address:''});
   const [token, setToken] = useState({});
   const { setGlobalToken } = useContext(GlobalToken);
@@ -43,9 +43,9 @@ function StepForm() {
     form.setFieldsValue({ order: orders.code, });
   }
 
-  function selectPhone(phone) {
-    setPhone(phone);
-    form.setFieldsValue({ name: phone.phone, });
+  function selectPhone(phoneList) {
+    setPhoneList(phoneList);
+    form.setFieldsValue({ name: phoneList[0].phone+".......", });
   }
 
   function selectAddress(address) {
@@ -57,9 +57,11 @@ function StepForm() {
   const placeOrder = () => {
     const values = form.getFields();
     axios.post('/ri/placeOrderByCode', {
-      phoneId: phone.id,
+      //phoneId: phone.id,
       addressId: address.id,
       orderNum: values.number,
+      type: values.type,
+      preferentialSum: values.preferentialSum,
       wishPageRsp:orders,
       token:token,
     }).then((res) => {
@@ -86,9 +88,13 @@ function StepForm() {
     } catch (_) {}
   };
   function riLogin() {
+    const phoneNameList = [];
+    phoneList.map((value) => {
+      phoneNameList.push(value.phone)
+    })
     const values = form.getFields();
     axios.post('/ri/riLogin', {
-      phone: values.name,
+      phoneList: phoneNameList,
       password: values.basic.authorization,
     }).then((res) => {
       if(res.data.code === 0){
@@ -205,7 +211,29 @@ function StepForm() {
                 >
                   <Input/>
                 </Form.Item>
-
+                <Form.Item
+                    label={t['stepForm.channel.type']}
+                    required
+                    field="type"
+                    rules={[ { required: true, },]}
+                >
+                  <Select placeholder={ t['stepForm.channel.type'] } >
+                    <Select.Option value="1">公用券码</Select.Option>
+                    <Select.Option value="2">用户券码</Select.Option>
+                    <Select.Option value="3">无须券码</Select.Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                    label={t['stepForm.channel.preferentialSum']}
+                    field="preferentialSum"
+                >
+                  <Select placeholder={ t['stepForm.channel.preferentialSum'] } >
+                    <Select.Option value="P28">P28</Select.Option>
+                    <Select.Option value="P38">P38</Select.Option>
+                    <Select.Option value="P58">P58</Select.Option>
+                    <Select.Option value="P88">P88</Select.Option>
+                  </Select>
+                </Form.Item>
               </Form.Item>
             )}
             {current !== 3 ? (
@@ -284,7 +312,7 @@ function StepForm() {
           focusLock={true}
           style={{ top: 20,width:1200,height:800 }}
       >
-        <PopularContents token={token} onSelect={selectOrder}/>
+        <PopularContents token={token} width={300} onSelect={selectOrder}/>
       </Modal>
       <Modal
           title='用户'

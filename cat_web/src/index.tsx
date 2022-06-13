@@ -19,7 +19,7 @@ import './mock';
 const store = createStore(rootReducer);
 
 function Index() {
-  const defaultLang = storage.getItem('arco-lang') || 'en-US';
+  const defaultLang = storage.getItem('arco-lang') || 'zh-CN';
   const [lang, setLang] = useState(defaultLang);
 
   function getArcoLocale() {

@@ -25,7 +25,7 @@ function Workplace() {
             className={styles.panel}
             style={{ marginRight: gutter }}
           >
-            <PopularContents token={globalToken} onSelect={selectOrder}/>
+            <PopularContents token={globalToken} width={500} onSelect={selectOrder}/>
           </Col>
         </Row>
       </div>
