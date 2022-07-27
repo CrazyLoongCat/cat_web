@@ -4,9 +4,7 @@ import IconText from '../../common/icons/text.svg';
 import IconHorizontalVideo from '../../common/icons/horizontal.svg';
 import IconVerticalVideo from '../../common/icons/vertical.svg';
 import axios from "axios";
-import {IsUsedType} from "@/pages/list/ri-code/constants";
 const { Text } = Typography;
-export const IsNewType = ['新用户', '旧用户'];
 
 const ContentIcon = [
   <IconText key={0} />,
@@ -38,48 +36,24 @@ export function getColumns(
 
   return [
     {
-      title: t['searchTable.columns.id'],
-      dataIndex: 'id',
+      title: t['searchTable.columns.codePhone'],
+      dataIndex: 'codePhone',
     },
     {
-      title: t['searchTable.columns.phone'],
-      dataIndex: 'phone',
-      render: (value) => <Text copyable>{value}</Text>,
+      title: t['searchTable.columns.codeid'],
+      dataIndex: 'codeid',
     },
     {
-      title: t['searchTable.columns.password'],
-      dataIndex: 'password',
+      title: t['searchTable.columns.codename'],
+      dataIndex: 'codename',
     },
     {
-      title: t['searchTable.columns.remark'],
-      dataIndex: 'remark',
+      title: t['searchTable.columns.isInuse'],
+      dataIndex: 'isInuse',
     },
     {
       title: t['searchTable.columns.inputTime'],
       dataIndex: 'inputTime',
-    },
-    {
-      title: t['searchTable.columns.updateTime'],
-      dataIndex: 'updateTime',
-    },
-    {
-      title: t['searchTable.columns.isNew'],
-      dataIndex: 'isNew',
-      render: (value) => IsNewType[value],
-    },
-    {
-      title: t['searchTable.columns.operations'],
-      dataIndex: 'operations',
-      headerCellStyle: { paddingLeft: '15px' },
-      render: (_, record) => (
-          <Button
-              type="text"
-              size="small"
-              onClick={() => mydelete(record)}
-          >
-            删除
-          </Button>
-      ),
     },
   ];
 }

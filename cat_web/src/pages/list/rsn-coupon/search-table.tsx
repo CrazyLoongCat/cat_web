@@ -13,9 +13,9 @@ import axios from 'axios';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import './mock';
 import { getColumns } from './constants';
 import { searchParam} from './interface';
+import SearchForm from "./form";
 const FormItem = Form.Item;
 
 axios.defaults.timeout = 5000;                        //响应时间
@@ -27,18 +27,15 @@ export const Status = ['已上线', '未上线'];
 
 function SearchTable(props: searchParam) {
     const t = useLocale(locale);
-    const [selectedRows, setSelectedRows] = useState([]);
     const tableCallback = async (record, type) => {
         console.log(record, type);
     };
-    const [visible, setVisible] = React.useState(false);
     const columns = useMemo(() => getColumns(t, tableCallback), [t]);
-    const [loginPhone, setLoginPhone] = React.useState("19912122212");
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 30,
+        pageSize: 100,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
@@ -51,16 +48,15 @@ function SearchTable(props: searchParam) {
 
     function fetchData() {
         const { current, pageSize } = pagination;
-        console.log("查询时候的:"+loginPhone)
         setLoading(true);
-        axios.post('/rihainan/findOrderList',{
-            pageSize:30,
-            pageNum: current,
-            type: props.type,
-            phone:loginPhone,
+        axios.get('/rsnOrderCoupon/selectAll', {
+            params: {
+                current,
+                size: pageSize,
+                ...formParams,
+            },
         }).then((res) => {
-            console.log(res.data.data)
-            setData(res.data.data.list);
+            setData(res.data.data.records);
             setPatination({
                 ...pagination,
                 current,
@@ -70,10 +66,11 @@ function SearchTable(props: searchParam) {
         }).finally(() => setLoading(false));
     }
 
-    function exchange() {
-        console.log("获取时候的"+loginPhone)
-        fetchData();
-        setVisible(false);
+    function refresh() {
+        setLoading(true);
+        axios.post('/rsnew/getAllMyCoupon', {
+            phone: 'all'
+        }).finally(() => setLoading(false));
     }
 
     function onChangeTable(pagination) {
@@ -82,37 +79,35 @@ function SearchTable(props: searchParam) {
 
     const exportExcel = () => {
         const dataTable = [];
-        if (selectedRows) {
-            for (const i in selectedRows) {
-                if(selectedRows){
+        if (data) {
+            for (const i in data) {
+                if(data){
                     const obj = {
-                        '下单账号':loginPhone,
-                        '订单ID': selectedRows[i].mainOrderId,
-                        '下单时间': selectedRows[i].time,
-                        '订单状态': selectedRows[i].statusName,
-                        '实付金额': selectedRows[i].paidAmount,
-                        '收件人姓名': selectedRows[i].receiveName,
-                        '地址': selectedRows[i].receiveAddress,
-                        '手机号': selectedRows[i].receivePhone,
-                        '商品名称': selectedRows[i].goodsName,
-                        '数量': selectedRows[i].goodsCount,
+                        '优惠券账号':data[i].codePhone,
+                        '优惠券ID': data[i].codeid,
+                        '优惠券名称': data[i].codename,
+                        '是否可用': data[i].isInuse,
+                        '刷新时间': data[i].inputTime,
                     }
                     dataTable.push(obj);
                 }
             }
         }
-        const option={fileName : '海南订单_'+loginPhone, datas:[
+        const option={fileName : '中免日上_优惠券', datas:[
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    columnWidths: [10,10,5,5,5,15,6,15,5],
+                    sheetFilter:['优惠券账号','优惠券ID','优惠券名称','是否可用','刷新时间'],
+                    sheetHeader:['优惠券账号','优惠券ID','优惠券名称','是否可用','刷新时间'],
+                    columnWidths: [8,10,10,5,10],
                 }
             ]};
 
         const toExcel = new ExportJsonExcel(option);
         toExcel.saveExcel();
+    }
+    function handleSearch(params) {
+        setFormParams(params);
     }
 
     return (
@@ -121,54 +116,27 @@ function SearchTable(props: searchParam) {
                 title={t['menu.list.searchTable']}
                 headerStyle={{ border: 'none', height: 'auto', paddingTop: '20px' }}
             >
-                <div className={styles['button-group']}>
-                    <Card title='当前订单用户' bordered={false} style={{ width: '20%' }}>
-                        {loginPhone}
-                    </Card>
-                </div>
+                <SearchForm onSearch={handleSearch} />
                 <div className={styles['button-group']}>
                     <Space>
                         <Button type="primary"  onClick={exportExcel}>
                             {t['searchTable.operations.export']}
                         </Button>
-                        <Button type="primary"  onClick={() => setVisible(true)}>
-                            {t['searchTable.operations.login']}
+                        <Button type="primary"  onClick={refresh}>
+                            刷新优惠券(预计25分钟)
                         </Button>
                     </Space>
                 </div>
                 <Table
-                    rowKey="mainOrderId"
+                    rowKey="codeid"
                     loading={loading}
                     scroll={{ y: 400 }}
-                    rowSelection={{
-                        type:'checkbox',
-                        onSelectAll: (selected, selectedRows) =>{
-                            setSelectedRows(selectedRows);
-                        },
-                    }}
                     onChange={onChangeTable}
                     pagination={pagination}
                     columns={columns}
                     data={data}
                 />
             </Card>
-            <Modal
-                title='切换账号'
-                visible={visible}
-                onOk={exchange}
-                onCancel={() => setVisible(false)}
-                autoFocus={false}
-                focusLock={true}
-            >
-                <Form layout='horizontal' >
-                    <FormItem label='账号' style={{ width: 500 }} field='phone' rules={[{required: true,message: "账号必输"}]}
-                              normalize={(value) => {
-                                  setLoginPhone(value) ; return value;}}
-                    >
-                        <Input style={{ width: 270 }} allowClear placeholder='请输入账号...' />
-                    </FormItem>
-                </Form>
-            </Modal>
         </div>
     );
 }

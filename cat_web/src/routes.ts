@@ -34,12 +34,16 @@ export const routes = [
     key: 'list',
     children: [
       {
-        name: 'menu.list.searchTable',
-        key: 'list/search-table',
+        name: '用户管理',
+        key: 'list/ri-phone',
       },
       {
-        name: 'menu.list.cardList',
-        key: 'list/card',
+        name: '地址管理',
+        key: 'list/ri-address',
+      },
+      {
+        name: '优惠券管理',
+        key: 'list/ri-code',
       },
       {
         name: '海南APP-商品监控',
@@ -76,28 +80,54 @@ export const routes = [
         ]
       },
       {
+        name: '中免日上-订单',
+        key: 'list/rsn-orders',
+        children:[
+          {
+            name: '全部',
+            key: 'list/rsn-orders/all',
+          },
+          {
+            name: '待支付',
+            key: 'list/rsn-orders/prepay',
+          },
+          {
+            name: '待发货',
+            key: 'list/rsn-orders/delivery',
+          },
+          {
+            name: '待收货',
+            key: 'list/rsn-orders/receive',
+          },
+          {
+            name: '退款',
+            key: 'list/rsn-orders/refund',
+          }
+        ]
+      },
+      {
+        name: '日上APP-订单',
+        key: 'list/ri-placed',
+      },
+      {
         name: '海南APP-员工返利信息',
         key: 'list/hn-reward',
       },
       {
-        name: '日上APP-用户管理',
-        key: 'list/ri-phone',
-      },
-      {
-        name: '日上APP-地址管理',
-        key: 'list/ri-address',
-      },
-      {
-        name: '日上APP-优惠券管理',
-        key: 'list/ri-code',
+        name: '中免日上-优惠券',
+        key: 'list/rsn-coupon',
       },
       {
         name: '日上APP-下单',
         key: 'form/RiPlaceOrder',
       },
       {
-        name: '日上APP-订单',
-        key: 'list/ri-placed',
+        name: '中免日上-下单',
+        key: 'form/rsn-place-order',
+      },
+      {
+        name: '中免日上-添加购物车',
+        key: 'form/rsn-add-car-and-address',
       },
     ],
   },

@@ -62,9 +62,10 @@ function PopularContent(props: {
       for (const i in selectedRows) {
         if(selectedRows){
           const obj = {
+            '下单账号':props.phone,
             '订单编号': selectedRows[i].code,
             '下单时间': selectedRows[i].creatdate,
-            '完成状态': selectedRows[i].statedesc,
+            '订单状态': selectedRows[i].statedesc,
             '实付金额': selectedRows[i].prices,
             '收件人姓名': selectedRows[i].contacts,
             '地址': selectedRows[i].address,
@@ -82,9 +83,9 @@ function PopularContent(props: {
         {
           sheetData:dataTable,
           sheetName:'sheet',
-          sheetFilter:['订单编号','下单时间','完成状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-          sheetHeader:['订单编号','下单时间','完成状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-          columnWidths: [10,10,5,5,5,15,6,15,5],
+          sheetFilter:['下单账号','订单编号','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
+          sheetHeader:['下单账号','订单编号','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
+          columnWidths: [8,10,10,5,5,5,15,6,15,5],
         }
       ]};
 

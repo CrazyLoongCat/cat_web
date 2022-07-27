@@ -30,6 +30,7 @@ const i18n = {
     'searchTable.columns.remark': '备注',
     'searchTable.columns.inputTime': '登记时间',
     'searchTable.columns.updateTime': '更新时间',
+    'searchTable.columns.isNew': '是否新用户',
     'searchTable.columns.contentNum': '内容量',
     'searchTable.columns.operations': '操作',
     'searchTable.columns.operations.view': '查看',

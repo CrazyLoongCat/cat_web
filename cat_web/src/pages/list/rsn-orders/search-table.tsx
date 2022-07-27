@@ -13,7 +13,6 @@ import axios from 'axios';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import './mock';
 import { getColumns } from './constants';
 import { searchParam} from './interface';
 const FormItem = Form.Item;
@@ -25,7 +24,7 @@ axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
 
-function SearchTable(props: searchParam) {
+function SearchRSNTable(props: searchParam) {
     const t = useLocale(locale);
     const [selectedRows, setSelectedRows] = useState([]);
     const tableCallback = async (record, type) => {
@@ -33,12 +32,12 @@ function SearchTable(props: searchParam) {
     };
     const [visible, setVisible] = React.useState(false);
     const columns = useMemo(() => getColumns(t, tableCallback), [t]);
-    const [loginPhone, setLoginPhone] = React.useState("19912122212");
+    const [loginPhone, setLoginPhone] = React.useState("18333187054");
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 30,
+        pageSize: 10,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
@@ -51,12 +50,14 @@ function SearchTable(props: searchParam) {
 
     function fetchData() {
         const { current, pageSize } = pagination;
-        console.log("查询时候的:"+loginPhone)
+        if (props.phone != null) {
+            setLoginPhone(props.phone);
+        }
         setLoading(true);
-        axios.post('/rihainan/findOrderList',{
-            pageSize:30,
-            pageNum: current,
-            type: props.type,
+        axios.post('/rsnew/getOrderList',{
+            pageSize:10,
+            page: current,
+            status: props.type,
             phone:loginPhone,
         }).then((res) => {
             console.log(res.data.data)
@@ -65,7 +66,7 @@ function SearchTable(props: searchParam) {
                 ...pagination,
                 current,
                 pageSize,
-                total: res.data.data.total,
+                total: res.data.data.totalCounts,
             });
         }).finally(() => setLoading(false));
     }
@@ -80,6 +81,7 @@ function SearchTable(props: searchParam) {
         setPatination(pagination);
     }
 
+
     const exportExcel = () => {
         const dataTable = [];
         if (selectedRows) {
@@ -87,27 +89,28 @@ function SearchTable(props: searchParam) {
                 if(selectedRows){
                     const obj = {
                         '下单账号':loginPhone,
-                        '订单ID': selectedRows[i].mainOrderId,
-                        '下单时间': selectedRows[i].time,
+                        '商户编号': selectedRows[i].merchantNum,
+                        '下单时间': selectedRows[i].orderTime,
                         '订单状态': selectedRows[i].statusName,
-                        '实付金额': selectedRows[i].paidAmount,
-                        '收件人姓名': selectedRows[i].receiveName,
-                        '地址': selectedRows[i].receiveAddress,
-                        '手机号': selectedRows[i].receivePhone,
-                        '商品名称': selectedRows[i].goodsName,
-                        '数量': selectedRows[i].goodsCount,
+                        '实付金额': selectedRows[i].price,
+                        '收件人姓名': selectedRows[i].userName,
+                        '地址': selectedRows[i].address,
+                        '手机号': selectedRows[i].mobile,
+                        '商品名称': selectedRows[i].goodsNames,
+                        '数量': selectedRows[i].quantitys,
+                        '订单ID': selectedRows[i].userOrderId,
                     }
                     dataTable.push(obj);
                 }
             }
         }
-        const option={fileName : '海南订单_'+loginPhone, datas:[
+        const option={fileName : '中免日上订单_'+loginPhone, datas:[
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    columnWidths: [10,10,5,5,5,15,6,15,5],
+                    sheetFilter:['下单账号','商户编号','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量','订单ID'],
+                    sheetHeader:['下单账号','商户编号','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量','订单ID'],
+                    columnWidths: [8,10,10,5,5,5,15,6,15,5,5],
                 }
             ]};
 
@@ -137,13 +140,17 @@ function SearchTable(props: searchParam) {
                     </Space>
                 </div>
                 <Table
-                    rowKey="mainOrderId"
+                    rowKey="userOrderId"
                     loading={loading}
                     scroll={{ y: 400 }}
                     rowSelection={{
                         type:'checkbox',
                         onSelectAll: (selected, selectedRows) =>{
+                            console.log(selectedRows);
                             setSelectedRows(selectedRows);
+                        },
+                        onSelect: (selected, record, selectedRows) => {
+                            props.onSelect(record);
                         },
                     }}
                     onChange={onChangeTable}
@@ -173,4 +180,4 @@ function SearchTable(props: searchParam) {
     );
 }
 
-export default SearchTable;
+export default SearchRSNTable;
