@@ -9,7 +9,7 @@ import {
   Space, Form,
 } from '@arco-design/web-react';
 import {  IconPlus } from '@arco-design/web-react/icon';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import SearchForm from './form';
 import locale from './locale';
@@ -19,9 +19,6 @@ import { getColumns } from './constants';
 
 const FormItem = Form.Item;
 
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
@@ -55,7 +52,7 @@ function SearchAddress(props: {
   function fetchData() {
     const { current, pageSize } = pagination;
     setLoading(true);
-    axios.get('/riOrderAddress/selectAll', {
+    axiosHttp.get('/riOrderAddress/selectAll', {
           params: {
             current,
             size: pageSize,
@@ -80,7 +77,7 @@ function SearchAddress(props: {
   }
   function saveData() {
     setLoading(true);
-    axios.post('/riOrderAddress/insert', {
+    axiosHttp.post('/riOrderAddress/insert', {
       userName:addressForm.userName,
       userPhone:addressForm.userPhone,
       address:addressForm.address,

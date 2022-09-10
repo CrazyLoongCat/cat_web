@@ -9,7 +9,7 @@ import {
     Space, Form,
 } from '@arco-design/web-react';
 import ExportJsonExcel from 'js-export-excel';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
@@ -17,10 +17,6 @@ import './mock';
 import { getColumns } from './constants';
 import { searchParam} from './interface';
 const FormItem = Form.Item;
-
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
@@ -34,11 +30,12 @@ function SearchTable(props: searchParam) {
     const [visible, setVisible] = React.useState(false);
     const columns = useMemo(() => getColumns(t, tableCallback), [t]);
     const [loginPhone, setLoginPhone] = React.useState("19912122212");
+    const [loginCode, setLoginCode] = React.useState("");
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 30,
+        pageSize: 300,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
@@ -51,13 +48,13 @@ function SearchTable(props: searchParam) {
 
     function fetchData() {
         const { current, pageSize } = pagination;
-        console.log("查询时候的:"+loginPhone)
         setLoading(true);
-        axios.post('/rihainan/findOrderList',{
-            pageSize:30,
+        axiosHttp.post('/rihainan/findOrderList',{
+            pageSize:300,
             pageNum: current,
             type: props.type,
             phone:loginPhone,
+            code:loginCode,
         }).then((res) => {
             console.log(res.data.data)
             setData(res.data.data.list);
@@ -70,8 +67,13 @@ function SearchTable(props: searchParam) {
         }).finally(() => setLoading(false));
     }
 
+    function sendCode() {
+        axiosHttp.post('/rihainan/getPhoneCode',{
+            phone:loginPhone,
+        });
+    }
+
     function exchange() {
-        console.log("获取时候的"+loginPhone)
         fetchData();
         setVisible(false);
     }
@@ -167,6 +169,14 @@ function SearchTable(props: searchParam) {
                     >
                         <Input style={{ width: 270 }} allowClear placeholder='请输入账号...' />
                     </FormItem>
+                    <FormItem label='验证码' style={{ width: 500 }} field='loginCode' rules={[{required: true,message: "验证码必输"}]}
+                              normalize={(value) => {
+                                  setLoginCode(value) ; return value;}}
+                    >
+                        <Input style={{ width: 270 }} allowClear placeholder='验证码...' />
+                    </FormItem>
+                    <Button style={{ width: 100 }} type='primary' onClick = {sendCode}>发送验证码</Button>
+
                 </Form>
             </Modal>
         </div>

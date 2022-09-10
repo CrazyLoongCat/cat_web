@@ -3,7 +3,7 @@ import {Button, Modal, Typography} from '@arco-design/web-react';
 import IconText from '../../common/icons/text.svg';
 import IconHorizontalVideo from '../../common/icons/horizontal.svg';
 import IconVerticalVideo from '../../common/icons/vertical.svg';
-import axios from "axios";
+import axiosHttp  from '../../common/http'
 const { Text } = Typography;
 
 const ContentIcon = [
@@ -17,7 +17,7 @@ export function getColumns(
   callback: (record: Record<string, any>, type: string) => Promise<void>
 ) {
   function mydelete(record) {
-    axios.delete('/riOrderPhone/delete', {
+    axiosHttp.delete('/riOrderPhone/delete', {
       params: {	// 请求参数放在请求体
         id: record.id
       }

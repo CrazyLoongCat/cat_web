@@ -105,10 +105,10 @@ export const routes = [
           }
         ]
       },
-      {
+      /*{
         name: '日上APP-订单',
         key: 'list/ri-placed',
-      },
+      },*/
       {
         name: '海南APP-员工返利信息',
         key: 'list/hn-reward',
@@ -117,10 +117,10 @@ export const routes = [
         name: '中免日上-优惠券',
         key: 'list/rsn-coupon',
       },
-      {
+      /*{
         name: '日上APP-下单',
         key: 'form/RiPlaceOrder',
-      },
+      },*/
       {
         name: '中免日上-下单',
         key: 'form/rsn-place-order',

@@ -8,11 +8,8 @@ import {
 } from '@arco-design/web-react';
 import styles from './style/index.module.less';
 import cs from 'classnames';
-import axios from "axios";
+import axiosHttp  from '../../common/http'
 import SearchTable from "@/pages/list/ri-phone";
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 const FormItem = Form.Item;
 
 function CardBlock(props: CardBlockType) {
@@ -38,7 +35,7 @@ function CardBlock(props: CardBlockType) {
     async function saveData() {
         try{
             await form.validate()
-            axios.post('/hnMonitor/insertOrUpdate', form.getFields()).then((res) => {
+            axiosHttp.post('/hnMonitor/insertOrUpdate', form.getFields()).then((res) => {
                 setLoading(false);
                 if(res.data.data){
                     Modal.success({
@@ -56,7 +53,7 @@ function CardBlock(props: CardBlockType) {
         }
     }
     function showForm() {
-        axios.get('/hnMonitor/getByGoodsId/'+card.goodsId, {
+        axiosHttp.get('/hnMonitor/getByGoodsId/'+card.goodsId, {
         }).then((res) => {
             if(0 == res.data.code && res.data.data != null){
                 form.setFieldsValue(res.data.data);

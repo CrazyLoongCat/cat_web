@@ -9,17 +9,13 @@ import {
     Space, Form,
 } from '@arco-design/web-react';
 import ExportJsonExcel from 'js-export-excel';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
 import { getColumns } from './constants';
 import { searchParam} from './interface';
 const FormItem = Form.Item;
-
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
@@ -37,7 +33,7 @@ function SearchRSNTable(props: searchParam) {
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 10,
+        pageSize: 1,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
@@ -54,8 +50,8 @@ function SearchRSNTable(props: searchParam) {
             setLoginPhone(props.phone);
         }
         setLoading(true);
-        axios.post('/rsnew/getOrderList',{
-            pageSize:10,
+        axiosHttp.post('/rsnew/getOrderList',{
+            pageSize:1,
             page: current,
             status: props.type,
             phone:loginPhone,

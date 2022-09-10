@@ -12,17 +12,16 @@ import {
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import axios from "axios";
+import axiosHttp  from '../../common/http'
 import SearchAddress from "@/pages/list/ri-address/index";
 import SearchTable from "@/pages/list/ri-phone/index";
 import SearchRSNTable from '../../list/rsn-orders/search-table';
 
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 const { Title, Paragraph } = Typography;
 function StepForm() {
+
+
   const t = useLocale(locale);
   const [current, setCurrent] = useState(1);
   const [visiblePhone, setVisiblePhone] = React.useState(false);
@@ -32,7 +31,6 @@ function StepForm() {
   const [orders, setOrders] = useState({});
   const [phoneList, setPhoneList] = useState([{id:'',phone:''}]);
   const [address, setAddress] = useState({id:'',address:''});
-
 
   function selectOrder(orders) {
     setOrders(orders);
@@ -53,13 +51,15 @@ function StepForm() {
 
   const placeOrder = () => {
     const values = form.getFields();
-    axios.post('/rsnew/submitBatchOrder', {
+    axiosHttp.post('/rsnew/submitBatchOrder', {
       phone: values.orderPhone,
       addressId: address.id,
       orderNum: values.number,
       myOrderId: values.order,
       preferentialSum: values.preferentialSum,
       orderNumLimit: values.numberLimit,
+      isNew:values.isNew,
+      type:values.type,
     }).then((res) => {
       if(res.data.code === 0){
         Modal.success({
@@ -80,10 +80,7 @@ function StepForm() {
         <Title heading={5}>{t['stepForm.desc.basicInfo']}</Title>
         <div className={styles.wrapper}>
           <Steps current={current} lineless>
-            <Steps.Step
-              title={t['stepForm.title.channel']}
-              description={t['stepForm.desc.channel']}
-            />
+            <Steps.Step title='下单信息' />
           </Steps>
           <Form form={form} className={styles.form}>
             {current === 1 && (
@@ -122,32 +119,51 @@ function StepForm() {
                       }, ]} >
                   <Input/>
                 </Form.Item>
-                <Form.Item label={t['stepForm.channel.numberLimit']} field="numberLimit">
-                  <Input/>
-                </Form.Item>
-                <Form.Item label={t['stepForm.channel.type']} required  field="type"
-                    rules={[ { required: true, },]}
+                <Form.Item label='账号类型' required  field="isNew"
+                           rules={[ { required: true, },]}
                 >
+                  <Select placeholder='账号类型' >
+                    <Select.Option value="0">新账号</Select.Option>
+                    <Select.Option value="1">旧账号</Select.Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item label={t['stepForm.channel.type']} required  field="type"rules={[ { required: true, },]}>
                   <Select placeholder={ t['stepForm.channel.type'] } >
                     <Select.Option value="1">公用券码</Select.Option>
                     <Select.Option value="2">用户券码</Select.Option>
                     <Select.Option value="3">无须券码</Select.Option>
                   </Select>
                 </Form.Item>
-                <Form.Item label={t['stepForm.channel.preferentialSum']} field="preferentialSum"
-                >
-                  <Select placeholder={ t['stepForm.channel.preferentialSum'] } >
-                    <Select.Option value="P28">P28</Select.Option>
-                    <Select.Option value="P38">P38</Select.Option>
-                    <Select.Option value="P58">P58</Select.Option>
-                    <Select.Option value="P88">P88</Select.Option>
-                    <Select.Option value="28">28</Select.Option>
-                    <Select.Option value="38">38</Select.Option>
-                    <Select.Option value="50">50</Select.Option>
-                    <Select.Option value="68">68</Select.Option>
-                    <Select.Option value="120">120</Select.Option>
-                    <Select.Option value="100">100</Select.Option>
-                  </Select>
+
+                <Form.Item shouldUpdate noStyle>
+                  {(values) => {
+                    if (values.type === '1') {
+                      return (
+                          <Form.Item noStyle>
+                            <Form.Item label={t['stepForm.channel.preferentialSum']} field="preferentialSum"
+                                       rules={[ { required: true, }, ]} >
+                              <Input/>
+                            </Form.Item>
+                            <Form.Item label={t['stepForm.channel.numberLimit']} field="numberLimit" rules={[ { required: true, }, ]} >
+                              <Input/>
+                            </Form.Item>
+                          </Form.Item>
+                      );
+                    } else if (values.type === '2') {
+                      return (
+                          <Form.Item label={t['stepForm.channel.preferentialSum']} field="preferentialSum"
+                                     rules={[ { required: true, }, ]} >
+                            <Input/>
+                          </Form.Item>
+                      );
+                    } else {
+                      return (
+                          <Form.Item label={t['stepForm.channel.numberLimit']} field="numberLimit" rules={[ { required: true, }, ]} >
+                            <Input/>
+                          </Form.Item>
+                      );
+                    }
+                  }}
                 </Form.Item>
               </Form.Item>
             )}

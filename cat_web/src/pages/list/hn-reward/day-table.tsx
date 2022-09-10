@@ -4,7 +4,7 @@ import {
     Card,Modal,
     PaginationProps, Space, Button, Form, Input,
 } from '@arco-design/web-react';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import './mock';
@@ -12,9 +12,7 @@ import { getColumns } from './constants';
 import { searchParam} from './interface';
 import styles from "@/pages/list/hn-reward/style/index.module.less";
 import ExportJsonExcel from 'js-export-excel';
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
+
 const FormItem = Form.Item;
 
 function DayTable(props: searchParam) {
@@ -25,6 +23,7 @@ function DayTable(props: searchParam) {
     const columns = useMemo(() => getColumns(t, tableCallback), [t]);
     const [data, setData] = useState([]);
     const [loginPhone, setLoginPhone] = React.useState("18389872904");
+    const [loginCode, setLoginCode] = React.useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [visible, setVisible] = React.useState(false);
     const [pagination, setPatination] = useState<PaginationProps>({
@@ -44,10 +43,11 @@ function DayTable(props: searchParam) {
     function fetchData() {
         const { current, pageSize } = pagination;
         setLoading(true);
-        axios.post('/rihainan/getRewardDay',{
+        axiosHttp.post('/rihainan/getRewardDay',{
             pageSize:100,
             pageNum: current,
             phone:loginPhone,
+            code:loginCode,
         }).then((res) => {
             setData(res.data.data.list);
             setPatination({
@@ -58,6 +58,11 @@ function DayTable(props: searchParam) {
             });
         }).finally(() => setLoading(false));
     }
+    function sendCode() {
+        axiosHttp.post('/rihainan/getPhoneCode',{
+            phone:loginPhone,
+        });
+    }
 
     function exchange() {
         console.log("获取时候的"+loginPhone)
@@ -67,9 +72,10 @@ function DayTable(props: searchParam) {
     }
 
     const exportExcel = () => {
-        axios.post('/rihainan/exportRewardOrder',{
+        axiosHttp.post('/rihainan/exportRewardOrder',{
             phone:loginPhone,
             mainOrderIds:selectedRows,
+            code:loginCode,
         }).then((res) => {
             const dataTable = [];
             const allTable = [];
@@ -153,8 +159,7 @@ function DayTable(props: searchParam) {
                     onChange={onChangeTable}
                     rowSelection={{
                         type:'checkbox',
-                        onSelect: (selected, record, selectedRows) => {
-                            console.log(selectedRows);
+                        onSelectAll: (selected, selectedRows) =>{
                             setSelectedRows(selectedRows);
                         },
                     }}
@@ -178,6 +183,13 @@ function DayTable(props: searchParam) {
                 >
                     <Input style={{ width: 270 }} allowClear placeholder='请输入账号...' />
                 </FormItem>
+                <FormItem label='验证码' style={{ width: 500 }} field='loginCode'
+                          normalize={(value) => {
+                              setLoginCode(value) ; return value;}}
+                >
+                    <Input style={{ width: 270 }} allowClear placeholder='验证码...' />
+                </FormItem>
+                <Button style={{ width: 100 }} type='primary' onClick = {sendCode}>发送验证码</Button>
             </Form>
         </Modal>
         </div>

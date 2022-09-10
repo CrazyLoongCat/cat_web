@@ -4,7 +4,7 @@ import {
   Card,
   PaginationProps, Space, Button, Form, Input, Modal,
 } from '@arco-design/web-react';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import SearchForm from './form';
 import locale from './locale';
@@ -12,9 +12,6 @@ import './mock';
 import { getColumns } from './constants';
 import styles from "@/pages/list/ri-phone/style/index.module.less";
 import {IconPlus} from "@arco-design/web-react/icon";
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 const FormItem = Form.Item;
 import SearchTable from "@/pages/list/ri-phone";
 
@@ -50,7 +47,7 @@ function SearchMonitor(props: {
   function fetchData() {
     const { current, pageSize } = pagination;
     setLoading(true);
-    axios.get('/hnMonitor/selectAll', {
+    axiosHttp.get('/hnMonitor/selectAll', {
         params: {
           current,
           size: pageSize,
@@ -69,7 +66,7 @@ function SearchMonitor(props: {
   }
   function saveData() {
     setLoading(true);
-    axios.post('/hnMonitor/updateAll', phoneForm.getFields()).then((res) => {
+    axiosHttp.post('/hnMonitor/updateAll', phoneForm.getFields()).then((res) => {
       setLoading(false);
       if(res.data.data){
         Modal.success({

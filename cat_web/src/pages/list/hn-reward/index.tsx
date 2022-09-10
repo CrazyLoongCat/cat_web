@@ -1,14 +1,10 @@
 import React from 'react';
-import axios from 'axios';
 import { Card, Input, Modal, Form, Space, Button} from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
 import SearchTable from './day-table';
 import './mock';
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 
 export default function ListCard() {

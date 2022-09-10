@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import { useEffect, useState } from 'react';
 
 export default <T>(url: string, defaultValue: T[]): [boolean, T[]] => {
@@ -7,8 +7,7 @@ export default <T>(url: string, defaultValue: T[]): [boolean, T[]] => {
 
   useEffect(() => {
     setLoading(true);
-    axios
-      .get(url)
+    axiosHttp.get(url)
       .then((res) => {
         setData(res.data);
       })

@@ -7,7 +7,7 @@ import {
   Button,
   Space, Form, Input, Modal,
 } from '@arco-design/web-react';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import SearchForm from './form';
 import locale from './locale';
@@ -15,9 +15,6 @@ import styles from './style/index.module.less';
 import './mock';
 import { getColumns } from './constants';
 
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
@@ -84,7 +81,7 @@ function SearchTable(props: {
   function fetchData() {
     const { current, pageSize } = pagination;
     setLoading(true);
-    axios.get('/riOrderPlaced/selectAll', {
+    axiosHttp.get('/riOrderPlaced/selectAll', {
         params: {
           current,
           size: pageSize,

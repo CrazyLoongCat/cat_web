@@ -12,16 +12,12 @@ import {
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import axios from "axios";
+import axiosHttp  from '../../common/http'
 import PopularContents from "@/pages/list/ri-wishs/popular-contents";
 import SearchAddress from "@/pages/list/ri-address/index";
 import SearchTable from "@/pages/list/ri-phone/index";
 import { GlobalToken} from '@/context';
 
-
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 const { Title, Paragraph } = Typography;
 function StepForm() {
@@ -56,7 +52,7 @@ function StepForm() {
 
   const placeOrder = () => {
     const values = form.getFields();
-    axios.post('/ri/placeOrderByCode', {
+    axiosHttp.post('/ri/placeOrderByCode', {
       //phoneId: phone.id,
       addressId: address.id,
       orderNum: values.number,
@@ -93,7 +89,7 @@ function StepForm() {
       phoneNameList.push(value.phone)
     })
     const values = form.getFields();
-    axios.post('/ri/riLogin', {
+    axiosHttp.post('/ri/riLogin', {
       phoneList: phoneNameList,
       password: values.basic.authorization,
     }).then((res) => {

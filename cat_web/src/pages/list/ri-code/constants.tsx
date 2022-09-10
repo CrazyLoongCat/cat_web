@@ -4,7 +4,7 @@ import IconText from '../../common/icons/text.svg';
 import IconHorizontalVideo from '../../common/icons/horizontal.svg';
 import IconVerticalVideo from '../../common/icons/vertical.svg';
 import styles from './style/index.module.less';
-import axios from "axios";
+import axiosHttp  from '../../common/http'
 
 const { Text } = Typography;
 
@@ -22,7 +22,7 @@ export function getColumns(
   callback: (record: Record<string, any>, type: string) => Promise<void>
 ) {
   function mydelete(record) {
-    axios.delete('/riOrderConvolutionCode/delete', {
+    axiosHttp.delete('/riOrderConvolutionCode/delete', {
       params: {	// 请求参数放在请求体
         id: record.id
       }

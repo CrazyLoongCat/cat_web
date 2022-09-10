@@ -69,11 +69,9 @@ function SearchForm(props: {
           <Col span={colSpan}>
             <Form.Item label='账号类型' field="type">
               <Select  >
-                <Select.Option value="RS">日上</Select.Option>
                 <Select.Option value="RSN">中免日上</Select.Option>
                 <Select.Option value="HN">中免海南</Select.Option>
-                <Select.Option value="RS,RSN">日上,中免日上</Select.Option>
-                <Select.Option value="RS,RSN,HN">日上,中免日上,中免海南</Select.Option>
+                <Select.Option value="RSN,HN">日上,中免日上,中免海南</Select.Option>
               </Select>
             </Form.Item>
           </Col>

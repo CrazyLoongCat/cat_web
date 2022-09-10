@@ -12,14 +12,11 @@ import {
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import axios from "axios";
+import axiosHttp  from '../../common/http'
 import SearchAddress from "@/pages/list/ri-address/index";
 import SearchTable from "@/pages/list/ri-phone/index";
 import SearchRSNTable from '../../list/rsn-orders/search-table';
 
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 const { Title, Paragraph } = Typography;
 function StepForm() {
@@ -53,10 +50,12 @@ function StepForm() {
 
   const placeOrder = () => {
     const values = form.getFields();
-    axios.post('/rsnew/addCarAndAddress', {
+    axiosHttp.post('/rsnew/addCarAndAddress', {
       phone: values.orderPhone,
       addressId: address.id,
       myOrderId: values.order,
+      limitNum: values.limitNum,
+      isNew: values.isNew,
     }).then((res) => {
       if(res.data.code === 0){
         Modal.success({
@@ -112,6 +111,15 @@ function StepForm() {
                   <Input onClick={() => setVisibleAddress(true)}
                     placeholder={t['stepForm.channel.address.placeholder']}
                   />
+                </Form.Item>
+                <Form.Item label='数量限制' field='limitNum' rules={[{required: true,message: "数量限制必输"}]} >
+                  <Input   placeholder='请输入数量限制...' />
+                </Form.Item>
+                <Form.Item label='账号类型' field="isNew"  rules={[{required: true,message: "账号类型必输"}]} >
+                  <Select   >
+                    <Select.Option value="0">新账号</Select.Option>
+                    <Select.Option value="1">旧帐号</Select.Option>
+                  </Select>
                 </Form.Item>
               </Form.Item>
             )}

@@ -1,13 +1,11 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import {Button, Card, Modal, PaginationProps, Radio, Space, Table, Typography} from '@arco-design/web-react';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from './locale/useLocale';
 import { getColumns } from './constants';
 import styles from "@/pages/list/ri-wishs/style/index.module.less";
 import ExportJsonExcel from 'js-export-excel';
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
+
 
 function PopularContent(props: {
   token: any,
@@ -30,7 +28,7 @@ function PopularContent(props: {
 
   const fetchData = useCallback(() => {
     setLoading(true);
-    axios.post('/ri/getwishs', {
+    axiosHttp.post('/ri/getwishs', {
           type: type,
           token:  props.token,
           pageNum: page-1,

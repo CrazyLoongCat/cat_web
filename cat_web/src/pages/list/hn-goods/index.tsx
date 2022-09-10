@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import {Tabs, Card, Input, Typography, Grid,Modal, Form} from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
@@ -7,10 +7,6 @@ import styles from './style/index.module.less';
 import CardBlock from './card-block';
 import { GoodsDescription } from './interface';
 import './mock';
-
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 const { Title } = Typography;
 const { Row, Col } = Grid;
@@ -30,7 +26,7 @@ export default function ListCard() {
   const [activeKey, setActiveKey] = useState('all');
 
   const getData = () => {
-    axios.post('/rihainan/findAllGoodsList',{
+    axiosHttp.post('/rihainan/findAllGoodsList',{
         pageSize:10,
         pageNum: 1,
     }).then((res) => {
@@ -41,7 +37,7 @@ export default function ListCard() {
 
   const search = (values) => {
     if (values != null) {
-      axios.post('/rihainan/findGoodsList',{
+      axiosHttp.post('/rihainan/findGoodsList',{
         keyword:values,
         pageSize:100,
       }).then((res) => {

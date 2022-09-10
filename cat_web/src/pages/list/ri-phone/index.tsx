@@ -9,7 +9,8 @@ import {
   Space, Form, Select,
 } from '@arco-design/web-react';
 import {  IconPlus } from '@arco-design/web-react/icon';
-import axios from 'axios';
+//import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import SearchForm from './form';
 import locale from './locale';
@@ -19,9 +20,9 @@ import { getColumns } from './constants';
 
 const FormItem = Form.Item;
 
-axios.defaults.timeout = 5000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
-axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
+//axios.defaults.timeout = 5000;                        //响应时间
+//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';        //配置请求头
+//axios.defaults.baseURL = 'http://localhost:9090';   //配置接口地址
 
 export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
@@ -59,7 +60,7 @@ function SearchTable(props: {
   function fetchData() {
     const { current, pageSize } = pagination;
     setLoading(true);
-    axios.get('/riOrderPhone/selectAll', {
+    axiosHttp.get('/riOrderPhone/selectAll', {
         params: {
           current,
           size: pageSize,
@@ -84,7 +85,7 @@ function SearchTable(props: {
   }
   function saveData() {
     setLoading(true);
-    axios.post('/riOrderPhone/insert', phoneForm).then((res) => {
+    axiosHttp.post('/riOrderPhone/insert', phoneForm).then((res) => {
       setLoading(false);
       if(res.data.data){
         Modal.success({
@@ -102,7 +103,7 @@ function SearchTable(props: {
 
   function saveDataBatch() {
     setLoading(true);
-    axios.post('/riOrderPhone/insertBatch', phoneForm).then((res) => {
+    axiosHttp.post('/riOrderPhone/insertBatch', phoneForm).then((res) => {
       setLoading(false);
       if(res.data.data){
         Modal.success({
@@ -122,7 +123,7 @@ function SearchTable(props: {
       title:"是否确认领取中免日上优惠券？",
       onOk:() => {
         setLoading(true);
-        axios.post('/rsnew/drawCoupon', {
+        axiosHttp.post('/rsnew/drawCoupon', {
 
         }).finally(() => setLoading(false));
       }
@@ -134,7 +135,7 @@ function SearchTable(props: {
       title:"是否确认领取中免日上新用户优惠券？",
       onOk:() => {
         setLoading(true);
-        axios.post('/rsnew/drawCoupon', {
+        axiosHttp.post('/rsnew/drawCoupon', {
           limitNum:limitNum,
           newFlag:newViewFlag,
         }).finally(() => setLoading(false));
@@ -220,11 +221,9 @@ function SearchTable(props: {
                        phoneForm.type = value;return value;}}
           >
             <Select  style={{ width: 270 }}>
-              <Select.Option value="RS">日上</Select.Option>
               <Select.Option value="RSN">中免日上</Select.Option>
               <Select.Option value="HN">中免海南</Select.Option>
-              <Select.Option value="RS,RSN">日上,中免日上</Select.Option>
-              <Select.Option value="RS,RSN,HN">日上,中免日上,中免海南</Select.Option>
+              <Select.Option value="RSN,HN">中免日上,中免海南</Select.Option>
             </Select>
           </Form.Item>
           <FormItem label='备注' field='remark' style={{ width: 500 }}
@@ -267,11 +266,9 @@ function SearchTable(props: {
                        phoneForm.type = value;return value;}}
           >
             <Select  style={{ width: 270 }}>
-              <Select.Option value="RS">日上</Select.Option>
               <Select.Option value="RSN">中免日上</Select.Option>
               <Select.Option value="HN">中免海南</Select.Option>
-              <Select.Option value="RS,RSN">日上,中免日上</Select.Option>
-              <Select.Option value="RS,RSN,HN">日上,中免日上,中免海南</Select.Option>
+              <Select.Option value="RSN,HN">中免日上,中免海南</Select.Option>
             </Select>
           </Form.Item>
           <FormItem label='备注' field='remark' style={{ width: 500 }}

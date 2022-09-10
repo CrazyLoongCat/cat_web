@@ -8,7 +8,7 @@ import {
   Space, Form, Input, Modal,
 } from '@arco-design/web-react';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
-import axios from 'axios';
+import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import SearchForm from './form';
 import locale from './locale';
@@ -80,7 +80,7 @@ function SearchTable() {
     const { current, pageSize } = pagination;
     console.log(pagination)
     setLoading(true);
-    axios.get('/riOrderConvolutionCode/selectAll', {
+    axiosHttp.get('/riOrderConvolutionCode/selectAll', {
         params: {
           current,
           size: pageSize,
@@ -102,7 +102,7 @@ function SearchTable() {
   function saveData() {
     setLoading(true);
     console.log(codeString)
-    axios.post('/riOrderConvolutionCode/insertBatch', {
+    axiosHttp.post('/riOrderConvolutionCode/insertBatch', {
        codeString,
     }).then((res) => {
       setLoading(false);
