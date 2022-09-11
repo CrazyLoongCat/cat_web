@@ -57,13 +57,15 @@ function SearchRSNTable(props: searchParam) {
             phone:loginPhone,
         }).then((res) => {
             console.log(res.data.data)
-            setData(res.data.data.list);
-            setPatination({
-                ...pagination,
-                current,
-                pageSize,
-                total: res.data.data.totalCounts,
-            });
+            if (res.data.data) {
+                setData(res.data.data.list);
+                setPatination({
+                    ...pagination,
+                    current,
+                    pageSize,
+                    total: res.data.data.totalCounts,
+                });
+            }
         }).finally(() => setLoading(false));
     }
 

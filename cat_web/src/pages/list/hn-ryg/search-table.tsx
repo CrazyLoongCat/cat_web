@@ -56,13 +56,16 @@ function SearchTable() {
             code:loginCode,
         }).then((res) => {
             console.log(res.data.data)
-            setData(res.data.data);
-            setPatination({
-                ...pagination,
-                current,
-                pageSize,
-                total: 100000,
-            });
+            if (res.data.data) {
+                setData(res.data.data);
+                setPatination({
+                    ...pagination,
+                    current,
+                    pageSize,
+                    total: 100000,
+                });
+            }
+
         }).finally(() => setLoading(false));
     }
 
