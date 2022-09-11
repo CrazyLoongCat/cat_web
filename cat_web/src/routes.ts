@@ -1,7 +1,7 @@
 export const defaultRoute = 'dashboard/workplace';
 
 export const routes = [
-  {
+  /*{
     name: 'menu.dashboard',
     key: 'dashboard',
     children: [
@@ -28,7 +28,7 @@ export const routes = [
         key: 'visualization/multi-dimension-data-analysis',
       },
     ],
-  },
+  },*/
   {
     name: 'menu.list',
     key: 'list',
@@ -52,6 +52,36 @@ export const routes = [
       {
         name: '海南APP-监控列表',
         key: 'list/hn-monitors',
+      },
+      {
+        name: '海南APP-如意购',
+        key: 'list/hn-ryg',
+      },
+      {
+        name: '海南APP-对账',
+        key: 'list/hn-orders-simple',
+        children:[
+          {
+            name: '全部',
+            key: 'list/hn-orders-simple/all',
+          },
+          {
+            name: '待支付',
+            key: 'list/hn-orders-simple/pre-pay',
+          },
+          {
+            name: '待发货',
+            key: 'list/hn-orders-simple/pre-send',
+          },
+          {
+            name: '待收货',
+            key: 'list/hn-orders-simple/pre-finish',
+          },
+          {
+            name: '已完成',
+            key: 'list/hn-orders-simple/finished',
+          }
+        ]
       },
       {
         name: '海南APP-订单',
@@ -110,10 +140,6 @@ export const routes = [
         key: 'list/ri-placed',
       },*/
       {
-        name: '海南APP-员工返利信息',
-        key: 'list/hn-reward',
-      },
-      {
         name: '中免日上-优惠券',
         key: 'list/rsn-coupon',
       },
@@ -126,12 +152,20 @@ export const routes = [
         key: 'form/rsn-place-order',
       },
       {
+        name: '中免日上-已下订单',
+        key: 'list/rsn-ordered',
+      },
+      {
         name: '中免日上-添加购物车',
         key: 'form/rsn-add-car-and-address',
       },
+      {
+        name: '海南APP-员工返利信息',
+        key: 'list/hn-reward',
+      },
     ],
   },
-  {
+  /*{
     name: 'menu.form',
     key: 'form',
     children: [
@@ -203,7 +237,7 @@ export const routes = [
         key: 'user/setting',
       },
     ],
-  },
+  },*/
 ];
 
 export const getName = (path: string, routes) => {

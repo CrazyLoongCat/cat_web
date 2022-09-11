@@ -13,15 +13,13 @@ import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import './mock';
 import { getColumns } from './constants';
-import { searchParam} from './interface';
+import SearchForm from "./form";
 const FormItem = Form.Item;
 
-export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
 
-function SearchTable(props: searchParam) {
+function SearchTable() {
     const t = useLocale(locale);
     const [selectedRows, setSelectedRows] = useState([]);
     const tableCallback = async (record, type) => {
@@ -29,18 +27,18 @@ function SearchTable(props: searchParam) {
     };
     const [visible, setVisible] = React.useState(false);
     const columns = useMemo(() => getColumns(t, tableCallback), [t]);
-    const [loginPhone, setLoginPhone] = React.useState("19912122212");
+    const [loginPhone, setLoginPhone] = React.useState("18333187054");
     const [loginCode, setLoginCode] = React.useState("");
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 100,
+        pageSize: 1000,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
     const [loading, setLoading] = useState(true);
-    const [formParams, setFormParams] = useState({});
+    const [formParams, setFormParams] = useState({type:'',name:''});
 
     useEffect(() => {
         fetchData();
@@ -49,26 +47,27 @@ function SearchTable(props: searchParam) {
     function fetchData() {
         const { current, pageSize } = pagination;
         setLoading(true);
-        axiosHttp.post('/rihainan/findOrderList',{
-            pageSize:100,
+        axiosHttp.post('/ryg/getStaffOrders',{
+            pageSize:1000,
             pageNum: current,
-            type: props.type,
+            type: formParams.type ? formParams.type : 1,
+            name: formParams.name ? formParams.name : '',
             phone:loginPhone,
             code:loginCode,
         }).then((res) => {
             console.log(res.data.data)
-            setData(res.data.data.list);
+            setData(res.data.data);
             setPatination({
                 ...pagination,
                 current,
                 pageSize,
-                total: res.data.data.total,
+                total: 100000,
             });
         }).finally(() => setLoading(false));
     }
 
     function sendCode() {
-        axiosHttp.post('/rihainan/getPhoneCode',{
+        axiosHttp.post('/ryg/sendCode',{
             phone:loginPhone,
         });
     }
@@ -81,35 +80,38 @@ function SearchTable(props: searchParam) {
     function onChangeTable(pagination) {
         setPatination(pagination);
     }
+    function handleSearch(params) {
+        setFormParams(params);
+    }
 
     const exportExcel = () => {
         const dataTable = [];
-        if (selectedRows) {
-            for (const i in selectedRows) {
-                if(selectedRows){
+        if (data) {
+            for (const i in data) {
+                if(data){
                     const obj = {
                         '下单账号':loginPhone,
-                        '订单ID': selectedRows[i].mainOrderId,
-                        '下单时间': selectedRows[i].time,
-                        '订单状态': selectedRows[i].statusName,
-                        '实付金额': selectedRows[i].paidAmount,
-                        '收件人姓名': selectedRows[i].receiveName,
-                        '地址': selectedRows[i].receiveAddress,
-                        '手机号': selectedRows[i].receivePhone,
-                        '商品名称': selectedRows[i].goodsName,
-                        '数量': selectedRows[i].goodsCount,
+                        '订单编号': data[i].orderNo,
+                        '下单时间': data[i].createTime,
+                        '订单子编号': data[i].orderDetailNo,
+                        '订单状态': data[i].status==1?'有效':'无效',
+                        '商品ID': data[i].goodsId,
+                        '商品名称': data[i].name,
+                        '实付金额': data[i].payAmount,
+                        '数量': data[i].quantity,
+                        '图片':data[i].logo,
                     }
                     dataTable.push(obj);
                 }
             }
         }
-        const option={fileName : '海南订单_'+loginPhone, datas:[
+        const option={fileName : '如意购_'+loginPhone, datas:[
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    columnWidths: [10,10,5,5,5,15,6,15,5],
+                    sheetFilter:['下单账号','订单编号','下单时间','订单子编号','订单状态','商品ID','商品名称','实付金额','数量','图片'],
+                    sheetHeader:['下单账号','订单编号','下单时间','订单子编号','订单状态','商品ID','商品名称','实付金额','数量','图片'],
+                    columnWidths: [8,10,10,10,5,5,15,5,5,15],
                 }
             ]};
 
@@ -123,6 +125,7 @@ function SearchTable(props: searchParam) {
                 title={t['menu.list.searchTable']}
                 headerStyle={{ border: 'none', height: 'auto', paddingTop: '20px' }}
             >
+                <SearchForm onSearch={handleSearch} />
                 <div className={styles['button-group']}>
                     <Card title='当前订单用户' bordered={false} style={{ width: '20%' }}>
                         {loginPhone}
@@ -138,16 +141,11 @@ function SearchTable(props: searchParam) {
                         </Button>
                     </Space>
                 </div>
+
                 <Table
                     rowKey="mainOrderId"
                     loading={loading}
-                    scroll={{ y: 400 }}
-                    rowSelection={{
-                        type:'checkbox',
-                        onSelectAll: (selected, selectedRows) =>{
-                            setSelectedRows(selectedRows);
-                        },
-                    }}
+                    scroll={{ y: 500 }}
                     onChange={onChangeTable}
                     pagination={pagination}
                     columns={columns}

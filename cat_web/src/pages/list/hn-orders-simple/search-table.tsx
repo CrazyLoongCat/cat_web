@@ -35,7 +35,7 @@ function SearchTable(props: searchParam) {
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 100,
+        pageSize: 500,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
@@ -49,8 +49,8 @@ function SearchTable(props: searchParam) {
     function fetchData() {
         const { current, pageSize } = pagination;
         setLoading(true);
-        axiosHttp.post('/rihainan/findOrderList',{
-            pageSize:100,
+        axiosHttp.post('/rihainan/findOrderSimpleList',{
+            pageSize:500,
             pageNum: current,
             type: props.type,
             phone:loginPhone,
@@ -93,11 +93,7 @@ function SearchTable(props: searchParam) {
                         '下单时间': selectedRows[i].time,
                         '订单状态': selectedRows[i].statusName,
                         '实付金额': selectedRows[i].paidAmount,
-                        '收件人姓名': selectedRows[i].receiveName,
-                        '地址': selectedRows[i].receiveAddress,
-                        '手机号': selectedRows[i].receivePhone,
                         '商品名称': selectedRows[i].goodsName,
-                        '数量': selectedRows[i].goodsCount,
                     }
                     dataTable.push(obj);
                 }
@@ -107,9 +103,9 @@ function SearchTable(props: searchParam) {
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','收件人姓名','地址','手机号','商品名称','数量'],
-                    columnWidths: [10,10,5,5,5,15,6,15,5],
+                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称'],
+                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称'],
+                    columnWidths: [10,10,5,5,5,15],
                 }
             ]};
 
