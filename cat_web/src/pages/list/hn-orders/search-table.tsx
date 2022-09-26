@@ -87,20 +87,20 @@ function SearchTable(props: searchParam) {
 
     const exportExcel = () => {
         const dataTable = [];
-        if (selectedRows) {
-            for (const i in selectedRows) {
-                if(selectedRows){
+        if (data) {
+            for (const i in data) {
+                if(data){
                     const obj = {
                         '下单账号':loginPhone,
-                        '订单ID': selectedRows[i].mainOrderId,
-                        '下单时间': selectedRows[i].time,
-                        '订单状态': selectedRows[i].statusName,
-                        '实付金额': selectedRows[i].paidAmount,
-                        '收件人姓名': selectedRows[i].receiveName,
-                        '地址': selectedRows[i].receiveAddress,
-                        '手机号': selectedRows[i].receivePhone,
-                        '商品名称': selectedRows[i].goodsName,
-                        '数量': selectedRows[i].goodsCount,
+                        '订单ID': data[i].mainOrderId,
+                        '下单时间': data[i].time,
+                        '订单状态': data[i].statusName,
+                        '实付金额': data[i].paidAmount,
+                        '收件人姓名': data[i].receiveName,
+                        '地址': data[i].receiveAddress,
+                        '手机号': data[i].receivePhone,
+                        '商品名称': data[i].goodsName,
+                        '数量': data[i].goodsCount,
                     }
                     dataTable.push(obj);
                 }
@@ -145,12 +145,6 @@ function SearchTable(props: searchParam) {
                     rowKey="mainOrderId"
                     loading={loading}
                     scroll={{ y: 400 }}
-                    rowSelection={{
-                        type:'checkbox',
-                        onSelectAll: (selected, selectedRows) =>{
-                            setSelectedRows(selectedRows);
-                        },
-                    }}
                     onChange={onChangeTable}
                     pagination={pagination}
                     columns={columns}

@@ -21,7 +21,6 @@ export const Status = ['已上线', '未上线'];
 
 function SearchTable() {
     const t = useLocale(locale);
-    const [selectedRows, setSelectedRows] = useState([]);
     const tableCallback = async (record, type) => {
         console.log(record, type);
     };
@@ -96,13 +95,12 @@ function SearchTable() {
                         '下单账号':loginPhone,
                         '订单编号': data[i].orderNo,
                         '下单时间': data[i].createTime,
-                        '订单子编号': data[i].orderDetailNo,
                         '订单状态': data[i].status==1?'有效':'无效',
+                        '实付金额': data[i].payAmount1,
+                        '订单子编号': data[i].orderDetailNo,
                         '商品ID': data[i].goodsId,
                         '商品名称': data[i].name,
-                        '实付金额': data[i].payAmount,
                         '数量': data[i].quantity,
-                        '图片':data[i].logo,
                     }
                     dataTable.push(obj);
                 }
@@ -112,9 +110,9 @@ function SearchTable() {
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['下单账号','订单编号','下单时间','订单子编号','订单状态','商品ID','商品名称','实付金额','数量','图片'],
-                    sheetHeader:['下单账号','订单编号','下单时间','订单子编号','订单状态','商品ID','商品名称','实付金额','数量','图片'],
-                    columnWidths: [8,10,10,10,5,5,15,5,5,15],
+                    sheetFilter:['下单账号','订单编号','下单时间','订单状态','实付金额','订单子编号','商品ID','商品名称','数量'],
+                    sheetHeader:['下单账号','订单编号','下单时间','订单状态','实付金额','订单子编号','商品ID','商品名称','数量'],
+                    columnWidths: [8,10,10,5,5,10,5,15,5],
                 }
             ]};
 

@@ -135,14 +135,14 @@ export const routes = [
           }
         ]
       },
-      /*{
-        name: '日上APP-订单',
-        key: 'list/ri-placed',
-      },*/
       {
         name: '中免日上-优惠券',
         key: 'list/rsn-coupon',
       },
+      /*{
+        name: '日上APP-订单',
+        key: 'list/ri-placed',
+      },*/
       /*{
         name: '日上APP-下单',
         key: 'form/RiPlaceOrder',

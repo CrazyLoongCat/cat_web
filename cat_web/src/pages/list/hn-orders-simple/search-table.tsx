@@ -14,12 +14,12 @@ import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
 import './mock';
+import wechatImg from '../../common/image/wechat_huahua.jpg'
 import { getColumns } from './constants';
 import { searchParam} from './interface';
+import { Image } from '@arco-design/web-react';
 const FormItem = Form.Item;
 
-export const FilterType = ['规则筛选', '人工'];
-export const Status = ['已上线', '未上线'];
 
 function SearchTable(props: searchParam) {
     const t = useLocale(locale);
@@ -28,8 +28,9 @@ function SearchTable(props: searchParam) {
         console.log(record, type);
     };
     const [visible, setVisible] = React.useState(false);
+    const [adVisible, setAdVisible] = React.useState(true);
     const columns = useMemo(() => getColumns(t, tableCallback), [t]);
-    const [loginPhone, setLoginPhone] = React.useState("19912122212");
+    const [loginPhone, setLoginPhone] = React.useState("");
     const [loginCode, setLoginCode] = React.useState("");
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
@@ -73,6 +74,16 @@ function SearchTable(props: searchParam) {
     function sendCode() {
         axiosHttp.post('/rihainan/getPhoneCode',{
             phone:loginPhone,
+        }).then((res) => {
+            if(res.data.code === 0){
+                Modal.success({
+                    title: res.data.msg,
+                });
+            } else {
+                Modal.error({
+                    title: res.data.msg,
+                });
+            }
         });
     }
 
@@ -87,16 +98,16 @@ function SearchTable(props: searchParam) {
 
     const exportExcel = () => {
         const dataTable = [];
-        if (selectedRows) {
-            for (const i in selectedRows) {
-                if(selectedRows){
+        if (data) {
+            for (const i in data) {
+                if(data){
                     const obj = {
                         '下单账号':loginPhone,
-                        '订单ID': selectedRows[i].mainOrderId,
-                        '下单时间': selectedRows[i].time,
-                        '订单状态': selectedRows[i].statusName,
-                        '实付金额': selectedRows[i].paidAmount,
-                        '商品名称': selectedRows[i].goodsName,
+                        '订单ID': data[i].mainOrderId,
+                        '下单时间': data[i].time,
+                        '订单状态': data[i].statusName,
+                        '实付金额': data[i].paidAmount,
+                        '商品名称': data[i].goodsName,
                     }
                     dataTable.push(obj);
                 }
@@ -120,10 +131,10 @@ function SearchTable(props: searchParam) {
         <div>
             <Card
                 title={t['menu.list.searchTable']}
-                headerStyle={{ border: 'none', height: 'auto', paddingTop: '20px' }}
+                headerStyle={{ border: 'none', height: 'auto', paddingTop: '10px' }}
             >
                 <div className={styles['button-group']}>
-                    <Card title='当前订单用户' bordered={false} style={{ width: '20%' }}>
+                    <Card title='当前订单用户' bordered={false} style={{ width: '10%' ,paddingTop: '5px'}}>
                         {loginPhone}
                     </Card>
                 </div>
@@ -141,12 +152,6 @@ function SearchTable(props: searchParam) {
                     rowKey="mainOrderId"
                     loading={loading}
                     scroll={{ y: 400 }}
-                    rowSelection={{
-                        type:'checkbox',
-                        onSelectAll: (selected, selectedRows) =>{
-                            setSelectedRows(selectedRows);
-                        },
-                    }}
                     onChange={onChangeTable}
                     pagination={pagination}
                     columns={columns}
@@ -177,6 +182,27 @@ function SearchTable(props: searchParam) {
                     <Button style={{ width: 100 }} type='primary' onClick = {sendCode}>发送验证码</Button>
 
                 </Form>
+            </Modal>
+            <Modal
+                visible={adVisible}
+                footer={null}
+                onCancel={() => {
+                    setAdVisible(false);
+                }}
+                style={{ width: 600 }}
+            >
+                <Space >
+                    <Image width={200} src={wechatImg} alt='lamp' />
+                    <Card style={{ width: 350,fontSize:20,fontWeight:900 }} >
+                        cdf会员购海南返点1.1%<br />
+                        cdf会员购广州返点3%<br />
+                        cdf会员购返点3%(老号也可更换邀请码)<br />
+                        微信：Zora7054<br />
+                        也可以提供其他技术支持<br />
+                        欢迎各位代购同行进群交流沟通<br />
+                    </Card>
+                </Space>
+
             </Modal>
         </div>
     );

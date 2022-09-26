@@ -16,7 +16,7 @@ export default function ListCard() {
     <div className={styles.container}>
       <Card
         title={t['menu.list.card']}
-        headerStyle={{ border: 'none', height: 'auto', paddingTop: '20px' }}
+        headerStyle={{ border: 'none', height: 'auto', paddingTop: '10px' }}
       >
           <div className={styles['single-content']}>
             <SearchTable type={"0"} />
