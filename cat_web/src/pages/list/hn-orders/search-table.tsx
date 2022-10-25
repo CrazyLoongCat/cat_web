@@ -73,6 +73,16 @@ function SearchTable(props: searchParam) {
     function sendCode() {
         axiosHttp.post('/rihainan/getPhoneCode',{
             phone:loginPhone,
+        }).then((res) => {
+            if(res.data.code === 0){
+                Modal.success({
+                    title: res.data.msg,
+                });
+            } else {
+                Modal.error({
+                    title: res.data.msg,
+                });
+            }
         });
     }
 

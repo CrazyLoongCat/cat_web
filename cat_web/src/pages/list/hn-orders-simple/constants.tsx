@@ -38,4 +38,42 @@ export function getColumns(
   ];
 }
 
+export function getColumnsV(
+    t: any,
+    callback: (record: Record<string, any>, type: string) => Promise<void>
+) {
+
+  return [
+    {
+      title: '订单编号',
+      dataIndex: 'orderCode',
+    },
+    {
+      title: '支付时间',
+      dataIndex: 'payTime',
+    },
+    {
+      title: '完成时间',
+      dataIndex: 'finishedTime',
+    },
+    {
+      title: '订单状态',
+      dataIndex: 'orderStatus',
+    },
+    {
+      title: '支付金额',
+      dataIndex: 'payedAmt',
+    },
+    {
+      title: '返利金额',
+      dataIndex: 'verifyAmt',
+    },
+    {
+      title: '商品名称',
+      dataIndex: 'goodsName',
+    },
+
+  ];
+}
+
 export default () => ContentIcon;

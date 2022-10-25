@@ -13,64 +13,64 @@ import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import { getColumns } from './constants';
-import SearchForm from "./form";
-import { Upload } from '@arco-design/web-react';
+import './mock';
+import wechatImg from '../../common/image/wechat_huahua.jpg'
+//import wechatImg from '../../common/image/wechat_hanhan.jpg'
+import { getColumnsV } from './constants';
+import { searchParam} from './interface';
+import { Image } from '@arco-design/web-react';
 const FormItem = Form.Item;
 
-export const Status = ['已上线', '未上线'];
 
-function SearchTable() {
+function SearchTableV(props: searchParam) {
     const t = useLocale(locale);
     const tableCallback = async (record, type) => {
         console.log(record, type);
     };
     const [visible, setVisible] = React.useState(false);
-    const columns = useMemo(() => getColumns(t, tableCallback), [t]);
-    const [loginPhone, setLoginPhone] = React.useState("18333187054");
+    const [adVisible, setAdVisible] = React.useState(true);
+    const columns = useMemo(() => getColumnsV(t, tableCallback), [t]);
+    const [loginPhone, setLoginPhone] = React.useState("");
     const [loginCode, setLoginCode] = React.useState("");
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 1000,
+        pageSize: 500,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
     const [loading, setLoading] = useState(true);
-    const [formParams, setFormParams] = useState({type:'',name:''});
+    const [formParams, setFormParams] = useState({});
 
     useEffect(() => {
         fetchData();
     }, [pagination.current, pagination.pageSize, JSON.stringify(formParams)]);
 
     function fetchData() {
+        if (loginPhone == '') {
+            setLoading(false)
+            return
+        }
         const { current, pageSize } = pagination;
         setLoading(true);
-        axiosHttp.post('/ryg/getStaffOrders',{
-            pageSize:1000,
+        axiosHttp.post('/rihainan/getVerifyOrder',{
+            pageSize:500,
             pageNum: current,
-            type: formParams.type ? formParams.type : 1,
-            name: formParams.name ? formParams.name : '',
+            type: '0',
             phone:loginPhone,
             code:loginCode,
+            shareName:'王京华',
         }).then((res) => {
             console.log(res.data.data)
             if (res.data.data) {
                 setData(res.data.data);
-                setPatination({
-                    ...pagination,
-                    current,
-                    pageSize,
-                    total: 100000,
-                });
             }
-
         }).finally(() => setLoading(false));
     }
 
     function sendCode() {
-        axiosHttp.post('/ryg/sendCode',{
+        axiosHttp.post('/rihainan/getPhoneCode',{
             phone:loginPhone,
         }).then((res) => {
             if(res.data.code === 0){
@@ -93,9 +93,6 @@ function SearchTable() {
     function onChangeTable(pagination) {
         setPatination(pagination);
     }
-    function handleSearch(params) {
-        setFormParams(params);
-    }
 
     const exportExcel = () => {
         const dataTable = [];
@@ -103,30 +100,27 @@ function SearchTable() {
             for (const i in data) {
                 if(data){
                     const obj = {
-                        '下单账号':loginPhone,
-                        '订单编号': data[i].orderNo,
-                        '下单时间': data[i].createTime,
-                        '订单状态': data[i].status==1?'有效':'无效',
-                        '实付金额': data[i].payAmount1,
-                        '订单子编号': data[i].orderDetailNo,
-                        '商品ID': data[i].goodsId,
-                        '商品名称': data[i].name,
-                        '数量': data[i].quantity,
+                        '订单编号':data[i].orderCode,
+                        '支付时间': data[i].payTime,
+                        '完成时间': data[i].finishedTime,
+                        '订单状态': data[i].orderStatus,
+                        '支付金额': data[i].payedAmt,
+                        '返利金额': data[i].verifyAmt,
+                        '商品名称': data[i].goodsName,
                     }
                     dataTable.push(obj);
                 }
             }
         }
-        const option={fileName : '如意购_'+loginPhone, datas:[
+        const option={fileName : '海南订单返利_'+loginPhone, datas:[
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['下单账号','订单编号','下单时间','订单状态','实付金额','订单子编号','商品ID','商品名称','数量'],
-                    sheetHeader:['下单账号','订单编号','下单时间','订单状态','实付金额','订单子编号','商品ID','商品名称','数量'],
-                    columnWidths: [8,10,10,5,5,10,5,15,5],
+                    sheetFilter:['订单编号','支付时间','完成时间','订单状态','支付金额','返利金额','商品名称'],
+                    sheetHeader:['订单编号','支付时间','完成时间','订单状态','支付金额','返利金额','商品名称'],
+                    columnWidths: [10,8,8,5,5,5,15],
                 }
             ]};
-
         const toExcel = new ExportJsonExcel(option);
         toExcel.saveExcel();
     }
@@ -135,11 +129,10 @@ function SearchTable() {
         <div>
             <Card
                 title={t['menu.list.searchTable']}
-                headerStyle={{ border: 'none', height: 'auto', paddingTop: '20px' }}
+                headerStyle={{ border: 'none', height: 'auto', paddingTop: '10px' }}
             >
-                <SearchForm onSearch={handleSearch} />
                 <div className={styles['button-group']}>
-                    <Card title='当前订单用户' bordered={false} style={{ width: '20%' }}>
+                    <Card title='当前订单用户' bordered={false} style={{ width: '10%' ,paddingTop: '5px'}}>
                         {loginPhone}
                     </Card>
                 </div>
@@ -151,16 +144,12 @@ function SearchTable() {
                         <Button type="primary"  onClick={() => setVisible(true)}>
                             {t['searchTable.operations.login']}
                         </Button>
-                        <Upload
-                            action='http://localhost:9090/webapi/hnVerifyAllOrder/import'
-                        />
                     </Space>
                 </div>
-
                 <Table
                     rowKey="mainOrderId"
                     loading={loading}
-                    scroll={{ y: 500 }}
+                    scroll={{ y: 400 }}
                     onChange={onChangeTable}
                     pagination={pagination}
                     columns={columns}
@@ -192,8 +181,41 @@ function SearchTable() {
 
                 </Form>
             </Modal>
+            <Modal
+                visible={adVisible}
+                footer={null}
+                onCancel={() => {
+                    setAdVisible(false);
+                }}
+                //style={{ width: 550 }}
+                style={{ width: 600 }}
+            >
+                <Space >
+                    <Image width={200} src={wechatImg} alt='lamp' />
+                    <Card style={{ width: 350,fontSize:20,fontWeight:900 }} >
+                        cdf会员购海南返点1.2%<br />
+                        cdf会员购广州返点3%<br />
+                        cdf会员购返点3%(老号也可更换邀请码)<br />
+                        微信：Zora7054<br />
+                        也可以提供其他技术支持<br />
+                        欢迎各位代购同行进群交流沟通<br />
+                    </Card>
+                </Space>
+                {/*<Space >
+                    <Image width={250} src={wechatImg} alt='lamp' />
+                    <Card style={{ width: 250,fontSize:20,fontWeight:900 }} >
+                        会员购返利3，发货返<br />
+                        <br />
+                        广州返利3，发货返<br />
+                        <br />
+                        cdf会员购海南返利1.2<br />
+                        <br />
+                        返利认准憨憨不迷路<br />
+                    </Card>
+                </Space>*/}
+            </Modal>
         </div>
     );
 }
 
-export default SearchTable;
+export default SearchTableV;

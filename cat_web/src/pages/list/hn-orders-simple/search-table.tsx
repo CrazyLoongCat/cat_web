@@ -15,6 +15,7 @@ import locale from './locale';
 import styles from './style/index.module.less';
 import './mock';
 import wechatImg from '../../common/image/wechat_huahua.jpg'
+//import wechatImg from '../../common/image/wechat_hanhan.jpg'
 import { getColumns } from './constants';
 import { searchParam} from './interface';
 import { Image } from '@arco-design/web-react';
@@ -23,7 +24,6 @@ const FormItem = Form.Item;
 
 function SearchTable(props: searchParam) {
     const t = useLocale(locale);
-    const [selectedRows, setSelectedRows] = useState([]);
     const tableCallback = async (record, type) => {
         console.log(record, type);
     };
@@ -48,6 +48,10 @@ function SearchTable(props: searchParam) {
     }, [pagination.current, pagination.pageSize, JSON.stringify(formParams)]);
 
     function fetchData() {
+        if (loginPhone == '') {
+            setLoading(false)
+            return
+        }
         const { current, pageSize } = pagination;
         setLoading(true);
         axiosHttp.post('/rihainan/findOrderSimpleList',{
@@ -189,12 +193,13 @@ function SearchTable(props: searchParam) {
                 onCancel={() => {
                     setAdVisible(false);
                 }}
+                //style={{ width: 550 }}
                 style={{ width: 600 }}
             >
                 <Space >
                     <Image width={200} src={wechatImg} alt='lamp' />
                     <Card style={{ width: 350,fontSize:20,fontWeight:900 }} >
-                        cdf会员购海南返点1.1%<br />
+                        cdf会员购海南返点1.2%<br />
                         cdf会员购广州返点3%<br />
                         cdf会员购返点3%(老号也可更换邀请码)<br />
                         微信：Zora7054<br />
@@ -202,6 +207,18 @@ function SearchTable(props: searchParam) {
                         欢迎各位代购同行进群交流沟通<br />
                     </Card>
                 </Space>
+                {/*<Space >
+                    <Image width={250} src={wechatImg} alt='lamp' />
+                    <Card style={{ width: 250,fontSize:20,fontWeight:900 }} >
+                        会员购返利3，发货返<br />
+                        <br />
+                        广州返利3，发货返<br />
+                        <br />
+                        cdf会员购海南返利1.2<br />
+                        <br />
+                        返利认准憨憨不迷路<br />
+                    </Card>
+                </Space>*/}
 
             </Modal>
         </div>

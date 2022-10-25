@@ -66,6 +66,10 @@ export const routes = [
             key: 'list/hn-orders-simple/all',
           },
           {
+            name: '对账',
+            key: 'list/hn-orders-simple/verifys',
+          },
+          {
             name: '待支付',
             key: 'list/hn-orders-simple/pre-pay',
           },
