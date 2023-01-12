@@ -154,6 +154,9 @@ function SearchTable() {
                         <Upload
                             action='http://localhost:9090/webapi/hnVerifyAllOrder/import'
                         />
+                        <Upload
+                            action='http://localhost:9090/webapi/hnVerifyAllOrder/importRYG'
+                        />
                     </Space>
                 </div>
 

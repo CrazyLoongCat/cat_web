@@ -58,6 +58,10 @@ export const routes = [
         key: 'list/hn-ryg',
       },
       {
+        name: '海旅',
+        key: 'list/lv-gou',
+      },
+      {
         name: '海南APP-对账',
         key: 'list/hn-orders-simple',
         children:[

@@ -14,22 +14,21 @@ import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
 import './mock';
-import wechatImg from '../../common/image/wechat_huahua.jpg'
-//import wechatImg from '../../common/image/wechat_hanhan.jpg'
-import { getColumnsV } from './constants';
+import wechatImg from '../../common/image/wechat_hanhan.jpg'
+import { getColumns } from './constants';
 import { searchParam} from './interface';
 import { Image } from '@arco-design/web-react';
 const FormItem = Form.Item;
 
 
-function SearchTableV(props: searchParam) {
+function SearchTable(props: searchParam) {
     const t = useLocale(locale);
     const tableCallback = async (record, type) => {
         console.log(record, type);
     };
     const [visible, setVisible] = React.useState(false);
     const [adVisible, setAdVisible] = React.useState(true);
-    const columns = useMemo(() => getColumnsV(t, tableCallback), [t]);
+    const columns = useMemo(() => getColumns(t, tableCallback), [t]);
     const [loginPhone, setLoginPhone] = React.useState("");
     const [loginCode, setLoginCode] = React.useState("");
     const [data, setData] = useState([]);
@@ -54,18 +53,24 @@ function SearchTableV(props: searchParam) {
         }
         const { current, pageSize } = pagination;
         setLoading(true);
-        axiosHttp.post('/rihainan/getVerifyOrder',{
+        axiosHttp.post('/rihainan/findOrderSimpleList',{
             pageSize:500,
             pageNum: current,
-            type: '0',
+            type: props.type,
             phone:loginPhone,
             code:loginCode,
-            shareName:'王京华',
         }).then((res) => {
             console.log(res.data.data)
             if (res.data.data) {
-                setData(res.data.data);
+                setData(res.data.data.list);
+                setPatination({
+                    ...pagination,
+                    current,
+                    pageSize,
+                    total: res.data.data.total,
+                });
             }
+
         }).finally(() => setLoading(false));
     }
 
@@ -100,27 +105,27 @@ function SearchTableV(props: searchParam) {
             for (const i in data) {
                 if(data){
                     const obj = {
-                        '订单编号':data[i].orderCode,
-                        '支付时间': data[i].payTime,
-                        '完成时间': data[i].finishedTime,
-                        '订单状态': data[i].orderStatus,
-                        '支付金额': data[i].payedAmt,
-                        '返利金额': data[i].verifyAmt,
+                        '下单账号':loginPhone,
+                        '订单ID': data[i].mainOrderId,
+                        '下单时间': data[i].time,
+                        '订单状态': data[i].statusName,
+                        '实付金额': data[i].paidAmount,
                         '商品名称': data[i].goodsName,
                     }
                     dataTable.push(obj);
                 }
             }
         }
-        const option={fileName : '海南订单返利_'+loginPhone, datas:[
+        const option={fileName : '海南订单_'+loginPhone, datas:[
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['订单编号','支付时间','完成时间','订单状态','支付金额','返利金额','商品名称'],
-                    sheetHeader:['订单编号','支付时间','完成时间','订单状态','支付金额','返利金额','商品名称'],
-                    columnWidths: [10,8,8,5,5,5,15],
+                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称'],
+                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称'],
+                    columnWidths: [10,10,5,5,5,15],
                 }
             ]};
+
         const toExcel = new ExportJsonExcel(option);
         toExcel.saveExcel();
     }
@@ -187,21 +192,9 @@ function SearchTableV(props: searchParam) {
                 onCancel={() => {
                     setAdVisible(false);
                 }}
-                //style={{ width: 550 }}
-                style={{ width: 600 }}
+                style={{ width: 550 }}
             >
                 <Space >
-                    <Image width={200} src={wechatImg} alt='lamp' />
-                    <Card style={{ width: 350,fontSize:20,fontWeight:900 }} >
-                        cdf会员购海南返点2.5%<br />
-                        cdf会员购广州返点3%<br />
-                        cdf会员购返点3%(老号也可更换邀请码)<br />
-                        微信：Zora7054<br />
-                        也可以提供其他技术支持<br />
-                        欢迎各位代购同行进群交流沟通<br />
-                    </Card>
-                </Space>
-                {/*<Space >
                     <Image width={250} src={wechatImg} alt='lamp' />
                     <Card style={{ width: 250,fontSize:20,fontWeight:900 }} >
                         会员购返利3，发货返<br />
@@ -212,10 +205,11 @@ function SearchTableV(props: searchParam) {
                         <br />
                         返利认准憨憨不迷路<br />
                     </Card>
-                </Space>*/}
+                </Space>
+
             </Modal>
         </div>
     );
 }
 
-export default SearchTableV;
+export default SearchTable;

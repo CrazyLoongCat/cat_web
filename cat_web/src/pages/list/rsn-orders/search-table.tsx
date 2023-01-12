@@ -29,6 +29,7 @@ function SearchRSNTable(props: searchParam) {
     const [visible, setVisible] = React.useState(false);
     const columns = useMemo(() => getColumns(t, tableCallback), [t]);
     const [loginPhone, setLoginPhone] = React.useState("18333187054");
+    const [form] = Form.useForm();
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
@@ -71,12 +72,61 @@ function SearchRSNTable(props: searchParam) {
 
     function exchange() {
         console.log("获取时候的"+loginPhone)
+        //codeLogin();
         fetchData();
         setVisible(false);
     }
 
+    function codeLogin() {
+        const values = form.getFieldsValue();
+        axiosHttp.post('/rsnew/codeLogin', {
+            phone:loginPhone,
+            messageCode:values.messageCode
+        }).then((res) => {
+            if(res.data.code === 0){
+                Modal.success({
+                    title: res.data.msg,
+                });
+            } else {
+                Modal.error({
+                    title: res.data.msg,
+                });
+            }
+        });
+    }
+
     function onChangeTable(pagination) {
         setPatination(pagination);
+    }
+
+    function sendCode() {
+        axiosHttp.post('/rsnew/getPhoneCode',loginPhone).then((res) => {
+            if(res.data.code === 0){
+                Modal.success({
+                    title: res.data.msg,
+                });
+            } else {
+                Modal.error({
+                    title: res.data.msg,
+                });
+            }
+        });
+    }
+
+    function setToken() {
+        const values = form.getFieldsValue();
+        console.log(values)
+        axiosHttp.post('/rsnew/setToken', values).then((res) => {
+            if(res.data.code === 0){
+                Modal.success({
+                    title: res.data.msg,
+                });
+            } else {
+                Modal.error({
+                    title: res.data.msg,
+                });
+            }
+        });
     }
 
 
@@ -165,13 +215,27 @@ function SearchRSNTable(props: searchParam) {
                 autoFocus={false}
                 focusLock={true}
             >
-                <Form layout='horizontal' >
+                <Form layout='horizontal' form={form}>
                     <FormItem label='账号' style={{ width: 500 }} field='phone' rules={[{required: true,message: "账号必输"}]}
                               normalize={(value) => {
                                   setLoginPhone(value) ; return value;}}
                     >
                         <Input style={{ width: 270 }} allowClear placeholder='请输入账号...' />
                     </FormItem>
+                    <FormItem label='验证码' style={{ width: 500 }} field='loginCode' rules={[{required: true,message: "验证码必输"}]}>
+                        <Input style={{ width: 270 }} allowClear placeholder='验证码...' />
+                    </FormItem>
+                    <FormItem label='密钥' style={{ width: 500 }} field='accessToken'>
+                        <Input style={{ width: 270 }} allowClear  />
+                    </FormItem>
+                    <FormItem label='memberCode' style={{ width: 500 }} field='memberCode'>
+                        <Input style={{ width: 270 }} allowClear  />
+                    </FormItem>
+                    <FormItem label='userId' style={{ width: 500 }} field='userId'>
+                        <Input style={{ width: 270 }} allowClear  />
+                    </FormItem>
+                    <Button style={{ width: 100 }} type='primary' onClick = {sendCode}>发送验证码</Button>
+                    <Button style={{ width: 100 }} type='primary' onClick = {setToken}>设置密钥</Button>
                 </Form>
             </Modal>
         </div>

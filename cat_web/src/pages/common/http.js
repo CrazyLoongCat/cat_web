@@ -1,4 +1,5 @@
 import axios from "axios";
+import {Modal} from "@arco-design/web-react";
 // 配置不同环境下，调用不同接口
 
 switch(process.env.NODE_ENV){
@@ -19,6 +20,23 @@ axios.defaults.timeout=10000  //设置十秒
  * 看服务器要求什么格式
  */
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+
+/*axios.interceptors.request.use((config)=>{
+    if (window.sessionStorage.getItem('token')) {
+        config.headers['token'] = window.sessionStorage.getItem('token');
+    }
+    return config;
+})*/
+
+axios.interceptors.response.use( response =>{
+    if(response.data.code === 0){
+        return response
+    } else {
+        Modal.error({
+            title: response.data.msg,
+        });
+    }
+})
 
 
 export default axios

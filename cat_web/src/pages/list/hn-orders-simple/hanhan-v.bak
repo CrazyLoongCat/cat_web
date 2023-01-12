@@ -14,8 +14,7 @@ import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
 import './mock';
-import wechatImg from '../../common/image/wechat_huahua.jpg'
-//import wechatImg from '../../common/image/wechat_hanhan.jpg'
+import wechatImg from '../../common/image/wechat_hanhan.jpg'
 import { getColumnsV } from './constants';
 import { searchParam} from './interface';
 import { Image } from '@arco-design/web-react';
@@ -60,7 +59,7 @@ function SearchTableV(props: searchParam) {
             type: '0',
             phone:loginPhone,
             code:loginCode,
-            shareName:'王京华',
+            shareName:'憨憨',
         }).then((res) => {
             console.log(res.data.data)
             if (res.data.data) {
@@ -187,21 +186,9 @@ function SearchTableV(props: searchParam) {
                 onCancel={() => {
                     setAdVisible(false);
                 }}
-                //style={{ width: 550 }}
-                style={{ width: 600 }}
+                style={{ width: 550 }}
             >
                 <Space >
-                    <Image width={200} src={wechatImg} alt='lamp' />
-                    <Card style={{ width: 350,fontSize:20,fontWeight:900 }} >
-                        cdf会员购海南返点2.5%<br />
-                        cdf会员购广州返点3%<br />
-                        cdf会员购返点3%(老号也可更换邀请码)<br />
-                        微信：Zora7054<br />
-                        也可以提供其他技术支持<br />
-                        欢迎各位代购同行进群交流沟通<br />
-                    </Card>
-                </Space>
-                {/*<Space >
                     <Image width={250} src={wechatImg} alt='lamp' />
                     <Card style={{ width: 250,fontSize:20,fontWeight:900 }} >
                         会员购返利3，发货返<br />
@@ -212,7 +199,7 @@ function SearchTableV(props: searchParam) {
                         <br />
                         返利认准憨憨不迷路<br />
                     </Card>
-                </Space>*/}
+                </Space>
             </Modal>
         </div>
     );

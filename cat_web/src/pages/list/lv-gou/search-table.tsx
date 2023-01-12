@@ -13,35 +13,31 @@ import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import './mock';
-import wechatImg from '../../common/image/wechat_huahua.jpg'
-//import wechatImg from '../../common/image/wechat_hanhan.jpg'
-import { getColumnsV } from './constants';
-import { searchParam} from './interface';
-import { Image } from '@arco-design/web-react';
+import { getColumns } from './constants';
+import SearchForm from "./form";
 const FormItem = Form.Item;
 
+export const Status = ['已上线', '未上线'];
 
-function SearchTableV(props: searchParam) {
+function SearchTable() {
     const t = useLocale(locale);
     const tableCallback = async (record, type) => {
         console.log(record, type);
     };
     const [visible, setVisible] = React.useState(false);
-    const [adVisible, setAdVisible] = React.useState(true);
-    const columns = useMemo(() => getColumnsV(t, tableCallback), [t]);
+    const columns = useMemo(() => getColumns(t, tableCallback), [t]);
     const [loginPhone, setLoginPhone] = React.useState("");
-    const [loginCode, setLoginCode] = React.useState("");
+    const [token, setToken] = React.useState("");
     const [data, setData] = useState([]);
     const [pagination, setPatination] = useState<PaginationProps>({
         sizeCanChange: true,
         showTotal: true,
-        pageSize: 500,
+        pageSize: 20,
         current: 1,
         pageSizeChangeResetCurrent: true,
     });
     const [loading, setLoading] = useState(true);
-    const [formParams, setFormParams] = useState({});
+    const [formParams, setFormParams] = useState({type:'',name:''});
 
     useEffect(() => {
         fetchData();
@@ -54,32 +50,35 @@ function SearchTableV(props: searchParam) {
         }
         const { current, pageSize } = pagination;
         setLoading(true);
-        axiosHttp.post('/rihainan/getVerifyOrder',{
-            pageSize:500,
-            pageNum: current,
-            type: '0',
+        axiosHttp.post('/lvGou/getOrders',{
+            page: current,
             phone:loginPhone,
-            code:loginCode,
-            shareName:'王京华',
         }).then((res) => {
-            console.log(res.data.data)
-            if (res.data.data) {
-                setData(res.data.data);
+            console.log(res.data)
+            if (res.data.data.list) {
+                setData(res.data.data.list);
+                setPatination({
+                    ...pagination,
+                    current,
+                    pageSize,
+                    total: res.data.data.summary.count,
+                });
             }
         }).finally(() => setLoading(false));
     }
 
-    function sendCode() {
-        axiosHttp.post('/rihainan/getPhoneCode',{
+    function saveToken() {
+        axiosHttp.post('/ryg/saveToken',{
             phone:loginPhone,
+            token:token
         }).then((res) => {
-            if(res.data.code === 0){
+            if(res.data.data.code === 0){
                 Modal.success({
-                    title: res.data.msg,
+                    title: res.data.data.msg,
                 });
             } else {
                 Modal.error({
-                    title: res.data.msg,
+                    title: res.data.data.msg,
                 });
             }
         });
@@ -93,6 +92,9 @@ function SearchTableV(props: searchParam) {
     function onChangeTable(pagination) {
         setPatination(pagination);
     }
+    function handleSearch(params) {
+        setFormParams(params);
+    }
 
     const exportExcel = () => {
         const dataTable = [];
@@ -100,27 +102,27 @@ function SearchTableV(props: searchParam) {
             for (const i in data) {
                 if(data){
                     const obj = {
-                        '订单编号':data[i].orderCode,
-                        '支付时间': data[i].payTime,
-                        '完成时间': data[i].finishedTime,
-                        '订单状态': data[i].orderStatus,
-                        '支付金额': data[i].payedAmt,
-                        '返利金额': data[i].verifyAmt,
-                        '商品名称': data[i].goodsName,
+                        '订单号': data[i].order_sn,
+                        '下单时间': data[i].create_time,
+                        '买家': data[i].name,
+                        '实付金额': data[i].realPayMoneyB,
+                        '商品佣金': data[i].commissionAmountB,
+                        '状态': data[i].status_name,
                     }
                     dataTable.push(obj);
                 }
             }
         }
-        const option={fileName : '海南订单返利_'+loginPhone, datas:[
+        const option={fileName : '海旅_'+loginPhone, datas:[
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['订单编号','支付时间','完成时间','订单状态','支付金额','返利金额','商品名称'],
-                    sheetHeader:['订单编号','支付时间','完成时间','订单状态','支付金额','返利金额','商品名称'],
-                    columnWidths: [10,8,8,5,5,5,15],
+                    sheetFilter:['订单号','下单时间','买家','实付金额','商品佣金','状态'],
+                    sheetHeader:['订单号','下单时间','买家','实付金额','商品佣金','状态'],
+                    columnWidths: [10,10,5,5,5,5],
                 }
             ]};
+
         const toExcel = new ExportJsonExcel(option);
         toExcel.saveExcel();
     }
@@ -129,10 +131,11 @@ function SearchTableV(props: searchParam) {
         <div>
             <Card
                 title={t['menu.list.searchTable']}
-                headerStyle={{ border: 'none', height: 'auto', paddingTop: '10px' }}
+                headerStyle={{ border: 'none', height: 'auto', paddingTop: '20px' }}
             >
+                <SearchForm onSearch={handleSearch} />
                 <div className={styles['button-group']}>
-                    <Card title='当前订单用户' bordered={false} style={{ width: '10%' ,paddingTop: '5px'}}>
+                    <Card title='当前订单用户' bordered={false} style={{ width: '20%' }}>
                         {loginPhone}
                     </Card>
                 </div>
@@ -146,10 +149,11 @@ function SearchTableV(props: searchParam) {
                         </Button>
                     </Space>
                 </div>
+
                 <Table
-                    rowKey="mainOrderId"
+                    rowKey="order_sn"
                     loading={loading}
-                    scroll={{ y: 400 }}
+                    scroll={{ y: 500 }}
                     onChange={onChangeTable}
                     pagination={pagination}
                     columns={columns}
@@ -171,51 +175,18 @@ function SearchTableV(props: searchParam) {
                     >
                         <Input style={{ width: 270 }} allowClear placeholder='请输入账号...' />
                     </FormItem>
-                    <FormItem label='验证码' style={{ width: 500 }} field='loginCode' rules={[{required: true,message: "验证码必输"}]}
+                    <FormItem label='token' style={{ width: 500 }} field='token'
                               normalize={(value) => {
-                                  setLoginCode(value) ; return value;}}
+                                  setToken(value) ; return value;}}
                     >
-                        <Input style={{ width: 270 }} allowClear placeholder='验证码...' />
+                        <Input style={{ width: 270 }} allowClear placeholder='密钥...' />
                     </FormItem>
-                    <Button style={{ width: 100 }} type='primary' onClick = {sendCode}>发送验证码</Button>
+                    <Button style={{ width: 100 }} type='primary' onClick = {saveToken}>设置token</Button>
 
                 </Form>
-            </Modal>
-            <Modal
-                visible={adVisible}
-                footer={null}
-                onCancel={() => {
-                    setAdVisible(false);
-                }}
-                //style={{ width: 550 }}
-                style={{ width: 600 }}
-            >
-                <Space >
-                    <Image width={200} src={wechatImg} alt='lamp' />
-                    <Card style={{ width: 350,fontSize:20,fontWeight:900 }} >
-                        cdf会员购海南返点2.5%<br />
-                        cdf会员购广州返点3%<br />
-                        cdf会员购返点3%(老号也可更换邀请码)<br />
-                        微信：Zora7054<br />
-                        也可以提供其他技术支持<br />
-                        欢迎各位代购同行进群交流沟通<br />
-                    </Card>
-                </Space>
-                {/*<Space >
-                    <Image width={250} src={wechatImg} alt='lamp' />
-                    <Card style={{ width: 250,fontSize:20,fontWeight:900 }} >
-                        会员购返利3，发货返<br />
-                        <br />
-                        广州返利3，发货返<br />
-                        <br />
-                        cdf会员购海南返利1.2<br />
-                        <br />
-                        返利认准憨憨不迷路<br />
-                    </Card>
-                </Space>*/}
             </Modal>
         </div>
     );
 }
 
-export default SearchTableV;
+export default SearchTable;
