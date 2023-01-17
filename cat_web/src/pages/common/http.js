@@ -20,7 +20,8 @@ axios.defaults.timeout=10000  //设置十秒
  * 看服务器要求什么格式
  */
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
-
+//axios.defaults.headers.post['admin'] = 'system';
+//axios.defaults.headers.get['admin'] = 'system';
 /*axios.interceptors.request.use((config)=>{
     if (window.sessionStorage.getItem('token')) {
         config.headers['token'] = window.sessionStorage.getItem('token');

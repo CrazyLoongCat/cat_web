@@ -1,34 +1,6 @@
 export const defaultRoute = 'dashboard/workplace';
 
 export const routes = [
-  /*{
-    name: 'menu.dashboard',
-    key: 'dashboard',
-    children: [
-      {
-        name: 'menu.dashboard.workplace',
-        key: 'dashboard/workplace',
-      },
-      {
-        name: 'menu.dashboard.monitor',
-        key: 'dashboard/monitor',
-      },
-    ],
-  },
-  {
-    name: 'menu.visualization',
-    key: 'visualization',
-    children: [
-      {
-        name: 'menu.visualization.dataAnalysis',
-        key: 'visualization/data-analysis',
-      },
-      {
-        name: 'menu.visualization.multiDimensionDataAnalysis',
-        key: 'visualization/multi-dimension-data-analysis',
-      },
-    ],
-  },*/
   {
     name: 'menu.list',
     key: 'list',
@@ -173,79 +145,46 @@ export const routes = [
       },
     ],
   },
-  /*{
-    name: 'menu.form',
-    key: 'form',
+  {
+    name: '小程序后台管理',
+    key: 'smallcat',
     children: [
       {
-        name: 'menu.form.group',
-        key: 'form/group',
-      },
-      {
-        name: 'menu.form.step',
-        key: 'form/step',
+        name: '用户订单管理',
+        key: 'smallcat/ap-user-order',
+        children: [
+          {
+            name: '全部',
+            key: 'smallcat/ap-user-order/all',
+          },
+          {
+            name: '未跟单',
+            key: 'smallcat/ap-user-order/unDo',
+          },
+          {
+            name: '未生效返利',
+            key: 'smallcat/ap-user-order/needDo',
+          },
+          {
+            name: '审核未通过',
+            key: 'smallcat/ap-user-order/refuse',
+          },
+          {
+            name: '已生效返利',
+            key: 'smallcat/ap-user-order/needReturn',
+          },
+          {
+            name: '取消',
+            key: 'smallcat/ap-user-order/cancel',
+          },
+          {
+            name: '已返利',
+            key: 'smallcat/ap-user-order/done',
+          },
+        ],
       },
     ],
   },
-  {
-    name: 'menu.profile',
-    key: 'profile',
-    children: [
-      {
-        name: 'menu.profile.basic',
-        key: 'profile/basic',
-      },
-    ],
-  },
-
-  {
-    name: 'menu.result',
-    key: 'result',
-    children: [
-      {
-        name: 'menu.result.success',
-        key: 'result/success',
-        breadcrumb: false,
-      },
-      {
-        name: 'menu.result.error',
-        key: 'result/error',
-        breadcrumb: false,
-      },
-    ],
-  },
-  {
-    name: 'menu.exception',
-    key: 'exception',
-    children: [
-      {
-        name: 'menu.exception.403',
-        key: 'exception/403',
-      },
-      {
-        name: 'menu.exception.404',
-        key: 'exception/404',
-      },
-      {
-        name: 'menu.exception.500',
-        key: 'exception/500',
-      },
-    ],
-  },
-  {
-    name: 'menu.user',
-    key: 'user',
-    children: [
-      {
-        name: 'menu.user.info',
-        key: 'user/info',
-      },
-      {
-        name: 'menu.user.setting',
-        key: 'user/setting',
-      },
-    ],
-  },*/
 ];
 
 export const getName = (path: string, routes) => {
