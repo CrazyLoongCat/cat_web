@@ -183,6 +183,44 @@ export const routes = [
           },
         ],
       },
+      {
+        name: '用户返利管理',
+        key: 'smallcat/ap-rebate-record',
+        children: [
+          {
+            name: '全部',
+            key: 'smallcat/ap-rebate-record/all',
+          },
+          {
+            name: '待返利',
+            key: 'smallcat/ap-rebate-record/unDo',
+          },
+          {
+            name: '已返利',
+            key: 'smallcat/ap-rebate-record/done',
+          },
+          {
+            name: '取消返利',
+            key: 'smallcat/ap-rebate-record/cancel',
+          },
+          {
+            name: '返利拒绝',
+            key: 'smallcat/ap-rebate-record/fail',
+          },
+        ],
+      },
+      {
+        name: '小程序导入订单管理',
+        key: 'smallcat/ap-base-order',
+      },
+      {
+        name: '小程序用户查询',
+        key: 'smallcat/ap-user-info',
+      },
+      {
+        name: '小程序通知管理',
+        key: 'smallcat/ap-message-info',
+      },
     ],
   },
 ];

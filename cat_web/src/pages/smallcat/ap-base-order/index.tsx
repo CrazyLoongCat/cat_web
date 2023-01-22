@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   Table,
   Card,
-  PaginationProps, Space, Button, Form, Input, Select, Modal,
+  PaginationProps, Upload, Space, Button,
 } from '@arco-design/web-react';
 import axiosHttp  from '../../common/http'
 import useLocale from '@/utils/useLocale';
@@ -10,6 +10,7 @@ import SearchForm from './form';
 import locale from '../locale';
 import './mock';
 import { getColumns } from './constants';
+import styles from "@/pages/list/hn-ryg/style/index.module.less";
 
 function SearchTable(props: {
   onSelect: (values: Record<string, any>) => void;
@@ -40,7 +41,7 @@ function SearchTable(props: {
   function fetchData() {
     const { current, pageSize } = pagination;
     setLoading(true);
-    axiosHttp.get('/ap/admin/getUsers', {
+    axiosHttp.get('/ap/admin/getBaseOrders', {
         params: {
           current,
           size: pageSize,
@@ -74,6 +75,13 @@ function SearchTable(props: {
         headerStyle={{ border: 'none', height: 'auto', paddingTop: '20px' }}
       >
         <SearchForm onSearch={handleSearch} />
+        <div className={styles['button-group']}>
+          <Space>
+            <Upload
+                action='http://localhost:9090/webapi/ap/admin/import/hn'
+            />
+          </Space>
+        </div>
         <Table
           rowKey="userId"
           loading={loading}

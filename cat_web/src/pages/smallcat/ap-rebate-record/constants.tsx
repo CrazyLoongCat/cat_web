@@ -3,7 +3,7 @@ import {Button,} from '@arco-design/web-react';
 import IconText from '../../common/icons/text.svg';
 import IconHorizontalVideo from '../../common/icons/horizontal.svg';
 import IconVerticalVideo from '../../common/icons/vertical.svg';
-import {platform,checkStatusEnum} from "@/pages/smallcat/locale";
+import {rebateStatusEnum} from "@/pages/smallcat/locale";
 
 
 const ContentIcon = [
@@ -14,7 +14,7 @@ const ContentIcon = [
 
 export function getColumns(
   t: any,
-  checkStatus: string,
+  rebateStatus: string,
   callback: (record: Record<string, any>, type: string) => Promise<void>
 ) {
   function visibleHelper(record) {
@@ -26,38 +26,25 @@ export function getColumns(
       dataIndex: 'id',
     },
     {
-      title: t['searchTable.columns.orderId'],
-      dataIndex: 'orderId',
-    },
-    {
       title: t['searchTable.columns.userId'],
       dataIndex: 'userId',
     },
     {
-      title: t['searchTable.columns.platform'],
-      dataIndex: 'platform',
-      render: (value) => platform[value].value
+      title: t['searchTable.columns.rebateSum'],
+      dataIndex: 'rebateSum',
     },
     {
-      title: t['searchTable.columns.orderAmt'],
-      dataIndex: 'orderAmt',
+      title: t['searchTable.columns.rebateStatus'],
+      dataIndex: 'rebateStatus',
+      render: (value) => rebateStatusEnum[value].value
     },
     {
-      title: t['searchTable.columns.placedTime'],
-      dataIndex: 'placedTime',
+      title: t['searchTable.columns.rebateSubmitTime'],
+      dataIndex: 'rebateSubmitTime',
     },
     {
-      title: t['searchTable.columns.returnRate'],
-      dataIndex: 'returnRate',
-    },
-    {
-      title: t['searchTable.columns.returnAmt'],
-      dataIndex: 'returnAmt',
-    },
-    {
-      title: t['searchTable.columns.checkStatus'],
-      dataIndex: 'checkStatus',
-      render: (value) => checkStatusEnum[value].value
+      title: t['searchTable.columns.rebateSuccessTime'],
+      dataIndex: 'rebateSuccessTime',
     },
     {
       title: t['searchTable.columns.refuseReason'],
@@ -85,52 +72,37 @@ export function getColumns(
       dataIndex: 'id',
     },
     {
-      title: t['searchTable.columns.orderId'],
-      dataIndex: 'orderId',
-    },
-    {
       title: t['searchTable.columns.userId'],
       dataIndex: 'userId',
     },
     {
-      title: t['searchTable.columns.platform'],
-      dataIndex: 'platform',
-      render: (value) => platform[value].value
+      title: t['searchTable.columns.rebateSum'],
+      dataIndex: 'rebateSum',
     },
     {
-      title: t['searchTable.columns.orderAmt'],
-      dataIndex: 'orderAmt',
+      title: t['searchTable.columns.rebateStatus'],
+      dataIndex: 'rebateStatus',
+      render: (value) => rebateStatusEnum[value].value
     },
     {
-      title: t['searchTable.columns.placedTime'],
-      dataIndex: 'placedTime',
+      title: t['searchTable.columns.rebateSubmitTime'],
+      dataIndex: 'rebateSubmitTime',
     },
     {
-      title: t['searchTable.columns.returnRate'],
-      dataIndex: 'returnRate',
-    },
-    {
-      title: t['searchTable.columns.returnAmt'],
-      dataIndex: 'returnAmt',
-    },
-    {
-      title: t['searchTable.columns.checkStatus'],
-      dataIndex: 'checkStatus',
-      render: (value) => checkStatusEnum[value].value,
+      title: t['searchTable.columns.rebateSuccessTime'],
+      dataIndex: 'rebateSuccessTime',
     },
     {
       title: t['searchTable.columns.refuseReason'],
       dataIndex: 'refuseReason',
     },
   ];
-
-
-    if (checkStatus == "0") {
-      return columns2;
-    } else {
-      return columns;
-    }
-
+  if (rebateStatus == "0") {
+    return columns2;
+  } else {
+    return columns;
+  }
+  return columns;
 }
 
 export default () => ContentIcon;

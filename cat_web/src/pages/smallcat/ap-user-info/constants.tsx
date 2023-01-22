@@ -17,41 +17,25 @@ export function getColumns(
   t: any,
   callback: (record: Record<string, any>, type: string) => Promise<void>
 ) {
-  function mydelete(record) {
-    axiosHttp.delete('/riOrderPhone/delete', {
-      params: {	// 请求参数放在请求体
-        id: record.id
-      }
-    }).then((res) => {
-      if(res.data.data){
-        Modal.success({
-          title: res.data.msg,
-        });
-      } else {
-        Modal.error({
-          title: res.data.msg,
-        });
-      }
-    });
-  }
 
   return [
     {
-      title: t['searchTable.columns.id'],
-      dataIndex: 'id',
+      title: t['searchTable.columns.userId'],
+      dataIndex: 'userId',
     },
     {
-      title: t['searchTable.columns.phone'],
-      dataIndex: 'phone',
+      title: t['searchTable.columns.userName'],
+      dataIndex: 'userName',
       render: (value) => <Text copyable>{value}</Text>,
     },
     {
-      title: t['searchTable.columns.password'],
-      dataIndex: 'password',
+      title: t['searchTable.columns.userPhone'],
+      dataIndex: 'userPhone',
+      render: (value) => <Text copyable>{value}</Text>,
     },
     {
-      title: t['searchTable.columns.remark'],
-      dataIndex: 'remark',
+      title: t['searchTable.columns.lastLoginTime'],
+      dataIndex: 'lastLoginTime',
     },
     {
       title: t['searchTable.columns.inputTime'],
@@ -60,25 +44,6 @@ export function getColumns(
     {
       title: t['searchTable.columns.updateTime'],
       dataIndex: 'updateTime',
-    },
-    {
-      title: t['searchTable.columns.isNew'],
-      dataIndex: 'isNew',
-      render: (value) => IsNewType[value],
-    },
-    {
-      title: t['searchTable.columns.operations'],
-      dataIndex: 'operations',
-      headerCellStyle: { paddingLeft: '15px' },
-      render: (_, record) => (
-          <Button
-              type="text"
-              size="small"
-              onClick={() => mydelete(record)}
-          >
-            删除
-          </Button>
-      ),
     },
   ];
 }

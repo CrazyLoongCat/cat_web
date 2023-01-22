@@ -3,7 +3,7 @@ import {
   Form,
   Input,
   Button,
-  Grid, Select,
+  Grid, Select, DatePicker,
 } from '@arco-design/web-react';
 import { GlobalContext } from '@/context';
 import locale from '../locale';
@@ -45,16 +45,13 @@ function SearchForm(props: {
       >
         <Row gutter={24}>
           <Col span={colSpan}>
-            <Form.Item label={t['searchTable.columns.userName']} field="userName">
-              <Input placeholder={t['searchForm.userName.placeholder']} allowClear />
+            <Form.Item label={t['searchTable.columns.tipBeginTime']} field="tipBeginTime">
+              <DatePicker style={{ width: 200 }}/>
             </Form.Item>
           </Col>
           <Col span={colSpan}>
-            <Form.Item label={t['searchTable.columns.userPhone']} field="userPhone">
-              <Input
-                allowClear
-                placeholder={t['searchForm.userPhone.placeholder']}
-              />
+            <Form.Item label={t['searchTable.columns.tipEndTime']} field="tipEndTime">
+              <DatePicker style={{ width: 200 }}/>
             </Form.Item>
           </Col>
         </Row>
