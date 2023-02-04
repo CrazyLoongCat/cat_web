@@ -35,6 +35,10 @@ export function getColumns(
       title: t['searchTable.columns.goodsName'],
       dataIndex: 'goodsName',
     },
+    {
+      title: t['searchTable.columns.expressId'],
+      dataIndex: 'expressId',
+    },
   ];
 }
 

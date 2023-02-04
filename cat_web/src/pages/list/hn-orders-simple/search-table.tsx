@@ -112,6 +112,7 @@ function SearchTable(props: searchParam) {
                         '订单状态': data[i].statusName,
                         '实付金额': data[i].paidAmount,
                         '商品名称': data[i].goodsName,
+                        '物流编号': data[i].expressId,
                     }
                     dataTable.push(obj);
                 }
@@ -121,8 +122,8 @@ function SearchTable(props: searchParam) {
                 {
                     sheetData:dataTable,
                     sheetName:'sheet',
-                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称'],
-                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称'],
+                    sheetFilter:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称','物流编号'],
+                    sheetHeader:['下单账号','订单ID','下单时间','订单状态','实付金额','商品名称','物流编号'],
                     columnWidths: [10,10,5,5,5,15],
                 }
             ]};
